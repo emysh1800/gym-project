@@ -1602,8 +1602,29 @@ app.post('/api/reset', (req, res) => {
   }
 });
 
+// Serve Angular Static Build Files if available
+const DIST_PATH = path.join(__dirname, '..', 'dist', 'GymClient', 'browser');
+if (fs.existsSync(DIST_PATH)) {
+  app.use(express.static(DIST_PATH));
+}
+
 // Global 404 handler for unmatched API routes
-app.use((req, res) => {
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    success: false,
+    statusCode: 404,
+    error: 'Endpoint Not Found',
+    path: req.originalUrl,
+    method: req.method
+  });
+});
+
+// Single Page Application fallback for Angular HTML5 routing
+app.use((req, res, next) => {
+  const indexHtml = path.join(DIST_PATH, 'index.html');
+  if (fs.existsSync(indexHtml)) {
+    return res.sendFile(indexHtml);
+  }
   res.status(404).json({
     success: false,
     statusCode: 404,
