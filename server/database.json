@@ -1,0 +1,295 @@
+{
+  "credentials": [
+    {
+      "username": "admin",
+      "password": "123",
+      "role": "admin",
+      "name": "مدير النظام"
+    },
+    {
+      "username": "member",
+      "password": "123",
+      "role": "member",
+      "name": "أحمد محمود التميمي"
+    }
+  ],
+  "pricingPlans": [
+    {
+      "id": "monthly-basic",
+      "name": "الباقة الشهرية الأساسية",
+      "nameEn": "Monthly Basic",
+      "period": "شهرياً",
+      "price": 650,
+      "currency": "ج.م",
+      "features": [
+        "الدخول لصالة الأجهزة والحديد طوال الشهر",
+        "خزانة شخصية وغرف تغيير ملابس مجهزة",
+        "جلسة تقييم بدني وقياس InBody أولى مجاناً",
+        "متاح طوال أوقات العمل الرسمية"
+      ]
+    },
+    {
+      "id": "quarterly-pro",
+      "name": "باقة اللياقة 3 أشهر",
+      "nameEn": "3-Month Pro Fitness",
+      "period": "لكل 3 أشهر",
+      "price": 1650,
+      "currency": "ج.م",
+      "isPopular": true,
+      "badge": "الأكثر طلباً ⭐",
+      "features": [
+        "جميع مزايا الباقة الأساسية",
+        "دخول مجاني إلى 6 حصص جماعية (زومبا / يوجا)",
+        "متابعة شهرية لقياسات InBody مع المدرب",
+        "خطة تغذية استرشادية مخصصة",
+        "إمكانية تجميد الاشتراك لمدة 10 أيام"
+      ]
+    },
+    {
+      "id": "annual-vip",
+      "name": "باقة VIP السنوية الشاملة",
+      "nameEn": "Annual VIP All-Access",
+      "period": "سنوياً",
+      "price": 4900,
+      "currency": "ج.م",
+      "badge": "توفير 40% 💎",
+      "features": [
+        "دخول غير محدود لجميع الفروع على مدار 24/7",
+        "دخول مجاني لكافة الحصص الجماعية والكروس فيت",
+        "12 جلسة تدريب شخصي (Private Coach PT)",
+        "استخدام منطقة السبا، الساونا، والجاكوزي",
+        "إمكانية تجميد الاشتراك حتى 45 يوماً",
+        "دعوات مجانية للأصدقاء شهرياً"
+      ]
+    }
+  ],
+  "equipment": [
+    {
+      "id": "eq-cardio",
+      "name": "منطقة الكارديو المتطورة (Matrix & Life Fitness)",
+      "category": "كارديو وتنشيف",
+      "description": "أجهزة سير كهربائية، دراجات تفاعلية، وأجهزة إيلبتيكال بشاشات رقمية وتتبع معدل ضربات القلب.",
+      "icon": "🏃‍♂️",
+      "count": 28
+    },
+    {
+      "id": "eq-heavy",
+      "name": "منطقة الأوزان الحرة والحديد (Hammer Strength)",
+      "category": "كمال أجسام وتضخيم",
+      "description": "دمبلز من 2.5 كجم إلى 60 كجم، بارات أولمبية، كوابل متعددة الزوايا، ومقاعد رفع قابلة للتعديل.",
+      "icon": "🏋️‍♂️",
+      "count": 45
+    },
+    {
+      "id": "eq-functional",
+      "name": "منصة التدريب الوظيفي والمقاومة (Functional Rig)",
+      "category": "لياقة وتحمل",
+      "description": "حبال تسلق، أكياس رملية (Kettlebells)، صناديق قفز (Plyo Boxes)، وحبال قوة (Battle Ropes).",
+      "icon": "🧗‍♂️",
+      "count": 20
+    },
+    {
+      "id": "eq-recovery",
+      "name": "منطقة الاستشفاء والساونا والجاكوزي (Recovery Spa)",
+      "category": "استشفاء عضلي",
+      "description": "غرف ساونا خشبية فنلندية، حمام بخار تركي، وجاكوزي ساخن وبارد لتسريع التعافي العضلي.",
+      "icon": "🧖‍♂️",
+      "count": 4
+    }
+  ],
+  "branches": [
+    {
+      "id": "br-main",
+      "name": "الفرع الرئيسي - التجمع الخامس",
+      "location": "شارع التسعين الشمالي، مول النخبة، الدور الثاني",
+      "phone": "+20 100 123 4567",
+      "hours": "مفتوح 24 ساعة / طوال أيام الأسبوع",
+      "is24Hours": true
+    },
+    {
+      "id": "br-sheikh-zayed",
+      "name": "فرع الشيخ زايد - بيفرلي هيلز",
+      "location": "المحور المركزي، سنترال بارك بلازا",
+      "phone": "+20 102 987 6543",
+      "hours": "6:00 صباحاً - 1:00 بعد منتصف الليل",
+      "is24Hours": false
+    },
+    {
+      "id": "br-maadi",
+      "name": "فرع المعادي - دجلة",
+      "location": "شارع 206، متفرع من النصر، المعادي الجديدة",
+      "phone": "+20 114 555 8899",
+      "hours": "6:00 صباحاً - 12:00 منتصف الليل",
+      "is24Hours": false
+    }
+  ],
+  "sessions": [
+    {
+      "id": "cls-yoga",
+      "title": "يوجا واسترخاء (Hatha Yoga)",
+      "category": "استرخاء ومرونة",
+      "price": 150,
+      "currency": "ج.م",
+      "duration": "60 دقيقة",
+      "schedule": "يومياً 9:00 ص - 10:00 ص",
+      "coach": "ك. سلمى نور",
+      "icon": "🧘‍♀️",
+      "spotsLeft": 3
+    },
+    {
+      "id": "cls-zumba",
+      "title": "زومبا وحرق دهون (Zumba Dance)",
+      "category": "كارديو ورشاقة",
+      "price": 180,
+      "currency": "ج.م",
+      "duration": "50 دقيقة",
+      "schedule": "السبت، الاثنين، الأربعاء 6:00 م",
+      "coach": "ك. ياسمين عادل",
+      "icon": "💃",
+      "spotsLeft": 6
+    },
+    {
+      "id": "cls-crossfit",
+      "title": "كروس فيت تحدي القوة (CrossFit WOD)",
+      "category": "قوة وتحمل عالي",
+      "price": 220,
+      "currency": "ج.م",
+      "duration": "75 دقيقة",
+      "schedule": "الأحد، الثلاثاء، الخميس 7:30 م",
+      "coach": "ك. طارق الجارحي",
+      "icon": "⚡",
+      "spotsLeft": 3
+    },
+    {
+      "id": "cls-pilates",
+      "title": "بيلاتس وتقوية عضلات الجذع (Core Pilates)",
+      "category": "توازن وقوة داخلية",
+      "price": 170,
+      "currency": "ج.م",
+      "duration": "55 دقيقة",
+      "schedule": "يومياً 5:00 م - 6:00 م",
+      "coach": "ك. ندى إبراهيم",
+      "icon": "🤸‍♀️",
+      "spotsLeft": 5
+    }
+  ],
+  "currentMember": {
+    "id": "MEM-2026-089",
+    "name": "أحمد محمود التميمي",
+    "trainerName": "ك. كريم عثمان (Certified Master Coach)",
+    "avatarBg": "#2563eb",
+    "email": "ahmed.tamimi@example.com",
+    "joinDate": "2026-01-10"
+  },
+  "memberMetrics": {
+    "currentWeight": 78.5,
+    "height": 178,
+    "targetWeight": 73,
+    "bmi": 24.8,
+    "bmiCategory": "وزن مثالي (Healthy BMI)"
+  },
+  "memberSubscription": {
+    "planName": "باقة اللياقة 3 أشهر (3-Month Pro Fitness)",
+    "startDate": "2026-07-01",
+    "endDate": "2026-10-01",
+    "totalDays": 92,
+    "daysRemaining": 24,
+    "progressPercent": 74,
+    "status": "Active"
+  },
+  "memberSchedule": [
+    {
+      "day": "السبت (Day 1)",
+      "targetMuscle": "تمارين الصدر والترايسبس (Chest & Triceps)",
+      "exercisesCount": 6,
+      "duration": "60 دقيقة",
+      "completed": true
+    },
+    {
+      "day": "الاثنين (Day 2)",
+      "targetMuscle": "تمارين الظهر والبايسبس (Back & Biceps)",
+      "exercisesCount": 6,
+      "duration": "65 دقيقة",
+      "completed": true
+    },
+    {
+      "day": "الأربعاء (Day 3)",
+      "targetMuscle": "تمارين الأرجل والسمانة (Legs & Calves)",
+      "exercisesCount": 7,
+      "duration": "70 دقيقة",
+      "completed": false
+    },
+    {
+      "day": "الخميس (Day 4)",
+      "targetMuscle": "الأكتاف والبطن والكارديو (Shoulders & HIIT)",
+      "exercisesCount": 5,
+      "duration": "50 دقيقة",
+      "completed": false
+    }
+  ],
+  "nutritionPlan": {
+    "dailyCalories": 2350,
+    "proteinGrams": 165,
+    "carbsGrams": 230,
+    "fatsGrams": 65,
+    "waterLiters": 3.5
+  },
+  "adminMembers": [
+    {
+      "id": 1,
+      "name": "أحمد محمود التميمي",
+      "email": "ahmed.tamimi@example.com",
+      "phone": "01001234567",
+      "plan": "باقة اللياقة 3 أشهر (Pro)",
+      "status": "Active",
+      "endDate": "2027-09-29",
+      "avatarBg": "#2563eb"
+    },
+    {
+      "id": 2,
+      "name": "سارة خالد المنصوري",
+      "email": "sara.mansoori@example.com",
+      "phone": "01123456789",
+      "plan": "باقة VIP السنوية الشاملة",
+      "status": "Active",
+      "endDate": "2026-12-31",
+      "avatarBg": "#10b981"
+    },
+    {
+      "id": 3,
+      "name": "طارق عبد الله الزهراني",
+      "email": "tariq.zahrani@example.com",
+      "phone": "01234567890",
+      "plan": "الباقة الشهرية الأساسية",
+      "status": "Expired",
+      "endDate": "2026-09-01",
+      "avatarBg": "#ef4444"
+    },
+    {
+      "id": 4,
+      "name": "منى حسين فهمي",
+      "email": "mona.fahmy@example.com",
+      "phone": "01099887766",
+      "plan": "باقة اللياقة 3 أشهر (Pro)",
+      "status": "Active",
+      "endDate": "2026-09-26",
+      "avatarBg": "#f59e0b"
+    },
+    {
+      "id": 5,
+      "name": "خالد يوسف الألفي",
+      "email": "khaled.alfi@example.com",
+      "phone": "01155443322",
+      "plan": "الباقة الشهرية الأساسية",
+      "status": "Active",
+      "endDate": "2026-10-10",
+      "avatarBg": "#6366f1"
+    }
+  ],
+  "adminStats": {
+    "totalMembers": 120,
+    "activeSubscriptions": 95,
+    "expiringSoon": 10,
+    "monthlyRevenue": "148,500 ج.م"
+  }
+}

@@ -1,0 +1,186 @@
+<div class="portal-view">
+
+  <!-- Top Bar -->
+  <div class="portal-top-bar">
+    <div class="portal-breadcrumb">
+      <span class="bc-link" (click)="goHome()" style="cursor:pointer">الرئيسية</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-current">بوابة المشترك (Client Dashboard)</span>
+    </div>
+    <button type="button" class="btn-portal-back" (click)="goHome()">
+      ← العودة للرئيسية
+    </button>
+  </div>
+
+  @if (currentMember(); as currentMember) {
+    <!-- Member Profile Header -->
+    <div class="member-profile-banner">
+      <div class="profile-info-left">
+        <div class="member-large-avatar" [style.background-color]="currentMember.avatarBg">
+          {{ currentMember.name.charAt(0) }}
+        </div>
+        <div class="member-main-details">
+          <div class="member-badge-id">رقم العضوية: {{ currentMember.id }}</div>
+          <h1 class="portal-member-name">{{ currentMember.name }}</h1>
+          <p class="member-coach">
+            <span class="coach-icon">🎯</span>
+            المدرب الشخصي المعتمد:
+            <strong>{{ currentMember.trainerName }}</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="profile-status-right">
+        <span class="badge-status-pill active-pill">
+          <span class="pulse-dot"></span>
+          حالة الاشتراك: نشط (Active)
+        </span>
+        <span class="member-since">عضو منذ: {{ currentMember.joinDate }}</span>
+      </div>
+    </div>
+  }
+
+  @if (memberMetrics(); as memberMetrics) {
+    <!-- Body Metrics Section -->
+    <section class="portal-section">
+      <h2 class="portal-section-title">📊 القياسات البدنية ومؤشر الكتلة (Body Metrics)</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">⚖️</div>
+          <div class="metric-info">
+            <span class="m-label">الوزن الحالي (Current Weight)</span>
+            <span class="m-value">{{ memberMetrics.currentWeight }} <small>كجم</small></span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">📏</div>
+          <div class="metric-info">
+            <span class="m-label">الطول (Height)</span>
+            <span class="m-value">{{ memberMetrics.height }} <small>سم</small></span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🎯</div>
+          <div class="metric-info">
+            <span class="m-label">الوزن المستهدف (Target Weight)</span>
+            <span class="m-value">{{ memberMetrics.targetWeight }} <small>كجم</small></span>
+          </div>
+        </div>
+        <div class="metric-card highlight-bmi">
+          <div class="metric-icon">📈</div>
+          <div class="metric-info">
+            <span class="m-label">مؤشر كتلة الجسم (BMI)</span>
+            <span class="m-value">{{ memberMetrics.bmi }}</span>
+            <span class="bmi-badge">{{ memberMetrics.bmiCategory }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+
+  @if (memberSubscription(); as memberSubscription) {
+    <!-- Subscription Progress Section -->
+    <section class="portal-section">
+      <h2 class="portal-section-title">⏳ متابعة مدة الاشتراك (Subscription Progress)</h2>
+      <div class="progress-card">
+        <div class="progress-card-top">
+          <div>
+            <h3 class="progress-plan-name">{{ memberSubscription.planName }}</h3>
+            <p class="progress-dates">
+              من {{ memberSubscription.startDate }} إلى {{ memberSubscription.endDate }}
+            </p>
+          </div>
+          <div class="days-remaining-badge">
+            <span class="rem-num">{{ memberSubscription.daysRemaining }}</span>
+            <span class="rem-lbl">يوم متبقي من أصل {{ memberSubscription.totalDays }}</span>
+          </div>
+        </div>
+
+        <div class="progress-track-wrapper">
+          <div
+            class="progress-fill-bar"
+            [style.width.%]="memberSubscription.progressPercent"
+            [class.progress-good]="memberSubscription.daysRemaining > 15"
+            [class.progress-warning]="memberSubscription.daysRemaining <= 15"
+          ></div>
+        </div>
+        <div class="progress-labels-row">
+          <span>البداية (0 يوم)</span>
+          <span class="progress-percentage">{{ memberSubscription.progressPercent }}% منقضي</span>
+          <span>نهاية الاشتراك ({{ memberSubscription.totalDays }} يوم)</span>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Workout & Nutrition Grid -->
+  <div class="plan-nutrition-grid">
+
+    <!-- Workout Schedule -->
+    <div class="portal-schedule-card">
+      <div class="card-top-header">
+        <h3>🏋️ جدول التمارين الأسبوعي (Workout Routine)</h3>
+        <span class="tag-routine">محدث لهذا الشهر</span>
+      </div>
+      <div class="workout-items-list">
+        @for (item of memberSchedule(); track item.day) {
+          <div class="workout-row" [class.is-done]="item.completed">
+            <div class="w-status-box">
+              @if (item.completed) {
+                <span class="check-icon">✓ تم</span>
+              } @else {
+                <span class="pending-icon">قادم</span>
+              }
+            </div>
+            <div class="w-details">
+              <div class="w-day">{{ item.day }}</div>
+              <div class="w-target">{{ item.targetMuscle }}</div>
+            </div>
+            <div class="w-meta">
+              <span>{{ item.exercisesCount }} تمارين</span>
+              <span>{{ item.duration }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Nutrition Plan -->
+    @if (nutritionPlan(); as nutritionPlan) {
+      <div class="portal-nutrition-card">
+        <div class="card-top-header">
+          <h3>🥗 النظام الغذائي اليومي (Daily Nutrition)</h3>
+          <span class="tag-nutrition">هدف التنشيف والكتلة</span>
+        </div>
+        <div class="nutrition-calories-banner">
+          <span class="cal-title">السعرات اليومية المستهدفة</span>
+          <span class="cal-number">{{ nutritionPlan.dailyCalories }}</span>
+          <span class="cal-unit">سعرة حرارية (Kcal)</span>
+        </div>
+        <div class="macros-grid">
+          <div class="macro-box">
+            <span class="macro-color c-protein"></span>
+            <span class="macro-val">{{ nutritionPlan.proteinGrams }}g</span>
+            <span class="macro-name">بروتين (Protein)</span>
+          </div>
+          <div class="macro-box">
+            <span class="macro-color c-carbs"></span>
+            <span class="macro-val">{{ nutritionPlan.carbsGrams }}g</span>
+            <span class="macro-name">كاربوهيدرات (Carbs)</span>
+          </div>
+          <div class="macro-box">
+            <span class="macro-color c-fats"></span>
+            <span class="macro-val">{{ nutritionPlan.fatsGrams }}g</span>
+            <span class="macro-name">دهون صحية (Fats)</span>
+          </div>
+          <div class="macro-box">
+            <span class="macro-color c-water"></span>
+            <span class="macro-val">{{ nutritionPlan.waterLiters }}L</span>
+            <span class="macro-name">شرب الماء يومياً</span>
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

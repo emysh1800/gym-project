@@ -1,0 +1,165 @@
+<header class="main-navbar">
+  <div class="nav-container">
+
+    <!-- Brand Logo & Title (right side in RTL) -->
+    <div class="nav-brand" (click)="navigateHome()" style="cursor:pointer">
+      <div class="brand-badge">🏋️‍♂️</div>
+      <div class="brand-text">
+        <span class="brand-name">نادي اللياقة البدنية</span>
+        <span class="brand-sub">Gym Management System</span>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Links (hidden on mobile) -->
+    <nav class="nav-links">
+      <button
+        type="button"
+        class="nav-link-btn"
+        routerLink="/home"
+        routerLinkActive="active"
+      >
+        الرئيسية
+      </button>
+      <button type="button" class="nav-link-btn" (click)="scrollToSection('plans')">
+        الباقات والعروض
+      </button>
+      <button type="button" class="nav-link-btn" (click)="scrollToSection('single-classes')">
+        الحصص المنفردة
+      </button>
+      <button type="button" class="nav-link-btn" (click)="scrollToSection('equipment')">
+        الأجهزة والمعدات
+      </button>
+      <button type="button" class="nav-link-btn" (click)="scrollToSection('branches')">
+        الفروع والمواعيد
+      </button>
+      <button type="button" class="nav-link-btn" (click)="scrollToSection('contact')">
+        تواصل معنا
+      </button>
+    </nav>
+
+    <!-- Desktop Action Buttons (hidden on mobile) -->
+    <div class="nav-actions">
+      <button
+        type="button"
+        class="action-btn btn-member"
+        (click)="requestMemberPortal()"
+      >
+        <span class="btn-icon">👤</span>
+        <span class="btn-label">بوابة المشترك</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-btn btn-admin"
+        (click)="requestAdminDashboard()"
+      >
+        <span class="btn-icon">⚙️</span>
+        <span class="btn-label">لوحة الإدارة</span>
+      </button>
+
+      @if (authService.isLoggedIn$ | async) {
+        <div class="user-session-pill">
+          <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
+          <span class="session-name">
+            {{ (authService.userRole$ | async) === 'admin' ? 'الأدمن' : 'كابتن أحمد' }}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="action-btn btn-logout"
+          (click)="logout()"
+          title="تسجيل الخروج من الحساب"
+        >
+          <span class="btn-icon">🚪</span>
+          <span class="btn-label">تسجيل الخروج</span>
+        </button>
+      }
+    </div>
+
+    <!-- Mobile Hamburger Toggle (visible only on mobile/tablet) -->
+    <button
+      type="button"
+      class="mobile-menu-toggle"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen"
+      aria-label="فتح القائمة"
+    >
+      <span class="hamburger-bar" [class.open]="isMobileMenuOpen"></span>
+      <span class="hamburger-bar" [class.open]="isMobileMenuOpen"></span>
+      <span class="hamburger-bar" [class.open]="isMobileMenuOpen"></span>
+    </button>
+
+  </div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav" [class.mobile-nav--open]="isMobileMenuOpen">
+    <nav class="mobile-nav-links">
+      <button
+        type="button"
+        class="mobile-link"
+        routerLink="/home"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        الرئيسية
+      </button>
+      <button type="button" class="mobile-link" (click)="scrollToSection('plans'); closeMobileMenu()">
+        الباقات والعروض
+      </button>
+      <button type="button" class="mobile-link" (click)="scrollToSection('single-classes'); closeMobileMenu()">
+        الحصص المنفردة
+      </button>
+      <button type="button" class="mobile-link" (click)="scrollToSection('equipment'); closeMobileMenu()">
+        الأجهزة والمعدات
+      </button>
+      <button type="button" class="mobile-link" (click)="scrollToSection('branches'); closeMobileMenu()">
+        الفروع والمواعيد
+      </button>
+      <button type="button" class="mobile-link" (click)="scrollToSection('contact'); closeMobileMenu()">
+        تواصل معنا
+      </button>
+    </nav>
+
+    <div class="mobile-nav-divider"></div>
+
+    <div class="mobile-nav-actions">
+      <button
+        type="button"
+        class="action-btn btn-member"
+        (click)="requestMemberPortal(); closeMobileMenu()"
+      >
+        <span class="btn-icon">👤</span>
+        <span class="btn-label">بوابة المشترك</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-btn btn-admin"
+        (click)="requestAdminDashboard(); closeMobileMenu()"
+      >
+        <span class="btn-icon">⚙️</span>
+        <span class="btn-label">لوحة الإدارة</span>
+      </button>
+
+      @if (authService.isLoggedIn$ | async) {
+        <div class="user-session-pill">
+          <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
+          <span class="session-name">
+            {{ (authService.userRole$ | async) === 'admin' ? 'الأدمن' : 'كابتن أحمد' }}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="action-btn btn-logout"
+          (click)="logout(); closeMobileMenu()"
+          title="تسجيل الخروج من الحساب"
+        >
+          <span class="btn-icon">🚪</span>
+          <span class="btn-label">تسجيل الخروج</span>
+        </button>
+      }
+    </div>
+  </div>
+</header>

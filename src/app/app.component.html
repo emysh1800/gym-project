@@ -1,0 +1,13 @@
+<div class="app-root-wrapper" dir="rtl">
+  <app-toast />
+
+  @if (auth.loginModalRole$ | async; as role) {
+    <app-login-modal [targetRole]="role" (closed)="auth.closeLoginModal()" />
+  }
+
+  <app-navbar />
+
+  <main>
+    <router-outlet />
+  </main>
+</div>

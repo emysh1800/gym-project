@@ -1,0 +1,81 @@
+<div class="modal-backdrop" (click)="close()">
+  <div class="modal-dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <span class="modal-role-icon">{{ targetRole === 'admin' ? '🔐' : '🏋️‍♂️' }}</span>
+        <div>
+          <h2 class="modal-title">
+            {{ targetRole === 'admin' ? 'تسجيل دخول الأدمن (Admin Login)' : 'تسجيل دخول المشترك (Member Login)' }}
+          </h2>
+          <p class="modal-subtitle">
+            {{ targetRole === 'admin'
+                ? 'أدخل بيانات الإدارة للوصول إلى لوحة التحكم وصلاحيات المشتركين'
+                : 'سجل دخولك للوصول إلى بياناتك البدنية، التمارين، وجدول التغذية' }}
+          </p>
+        </div>
+      </div>
+      <button type="button" class="modal-close-btn" (click)="close()" aria-label="إغلاق النافذة">✕</button>
+    </div>
+
+    <!-- Error Alert -->
+    @if (loginError(); as loginError) {
+      <div class="login-error-alert" role="alert">
+        <span class="error-alert-icon">⚠️</span>
+        <span class="error-alert-text">{{ loginError }}</span>
+      </div>
+    }
+
+    <!-- Login Form -->
+    <form class="modal-login-form" (ngSubmit)="handleLogin()">
+      <div class="form-field-group">
+        <label for="login-username">اسم المستخدم أو البريد الإلكتروني (Username / Email)</label>
+        <div class="input-with-icon">
+          <span class="field-icon">👤</span>
+          <input
+            id="login-username"
+            type="text"
+            [(ngModel)]="loginForm.username"
+            name="username"
+            [placeholder]="targetRole === 'admin' ? 'admin' : 'member'"
+            autocomplete="username"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-field-group">
+        <label for="login-password">كلمة المرور (Password)</label>
+        <div class="input-with-icon">
+          <span class="field-icon">🔑</span>
+          <input
+            id="login-password"
+            [type]="showPassword() ? 'text' : 'password'"
+            [(ngModel)]="loginForm.password"
+            name="password"
+            placeholder="123"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="toggle-password-btn" (click)="togglePasswordVisibility()" aria-label="إظهار/إخفاء كلمة المرور">
+            {{ showPassword() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+      </div>
+
+
+
+      <!-- Modal Action Buttons -->
+      <div class="modal-actions-row">
+        <button type="submit" class="btn-modal-submit" [disabled]="isLoading()">
+          @if (isLoading()) { جاري التحقق... } @else { تسجيل الدخول (Login) }
+        </button>
+        <button type="button" class="btn-modal-cancel" (click)="close()">
+          إلغاء (Cancel)
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>

@@ -1,0 +1,257 @@
+<div class="public-home-view">
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-badge">🚀 المنظومة المتكاملة للياقة والصحة</div>
+      <h1 class="hero-title">ابدأ رحلتك الرياضية اليوم</h1>
+      <p class="hero-subtitle">
+        نجمع بين أحدث الأجهزة الرياضية، ونخبة من أفضل المدربين المعتمدين، وبرامج
+        تغذية وتدريب ذكية مصممة خصيصاً لتصل إلى أفضل نسخة من نفسك.
+      </p>
+      <div class="hero-buttons">
+        <button type="button" class="cta-primary-btn" (click)="scrollToSection('plans')">
+          ⚡ انضم إلينا الآن
+        </button>
+        <button type="button" class="cta-secondary-btn" (click)="navigateToMemberPortal()">
+          👤 تجربة بوابة المشترك
+        </button>
+      </div>
+
+      <!-- Quick Metrics Bar -->
+      <div class="hero-stats-row">
+        <div class="hero-stat-box">
+          <span class="stat-num" dir="ltr">+50</span>
+          <span class="stat-lbl">جهاز رياضي حديث</span>
+        </div>
+        <div class="hero-stat-box">
+          <span class="stat-num">3</span>
+          <span class="stat-lbl">فروع مجهزة 24/7</span>
+        </div>
+        <div class="hero-stat-box">
+          <span class="stat-num" dir="ltr">+1500</span>
+          <span class="stat-lbl">مشترك حققوا أهدافهم</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Membership Plans Section -->
+  <section id="plans" class="section-container">
+    <div class="section-header">
+      <span class="section-tag">باقات الاشتراكات والعروض</span>
+      <h2 class="section-heading">اختر الباقة المناسبة لمستواك</h2>
+      <p class="section-desc">خطط مرنة تناسب أهدافك الرياضية مع إمكانية التجميد والتقسيط</p>
+    </div>
+
+    <div class="plans-grid">
+      @for (plan of pricingPlans(); track plan.id) {
+        <div class="plan-card" [class.popular-card]="plan.isPopular">
+          @if (plan.badge) {
+            <div class="plan-ribbon">{{ plan.badge }}</div>
+          }
+          <div class="plan-header">
+            <h3 class="plan-name">{{ plan.name }}</h3>
+            <span class="plan-en-name">{{ plan.nameEn }}</span>
+            <div class="plan-price-wrap">
+              <span class="plan-price">{{ plan.price }}</span>
+              <span class="plan-currency">{{ plan.currency }}</span>
+              <span class="plan-period">/ {{ plan.period }}</span>
+            </div>
+          </div>
+
+          <ul class="plan-features">
+            @for (feature of plan.features; track feature) {
+              <li>
+                <span class="check-mark">✓</span>
+                <span>{{ feature }}</span>
+              </li>
+            }
+          </ul>
+
+          <button
+            type="button"
+            class="plan-btn"
+            [class.btn-popular]="plan.isPopular"
+            (click)="selectPlan(plan)"
+          >
+            اشترك في الباقة الآن
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Single Sessions Section -->
+  <section id="single-classes" class="section-container section-alt-bg">
+    <div class="section-header">
+      <span class="section-tag">الحصص الفردية والدفع بالحصة</span>
+      <h2 class="section-heading">حصص تدريبية متنوعة ومكثفة (Drop-in Sessions)</h2>
+      <p class="section-desc">
+        لا يشترط اشتراك شهري، يمكنك حجز حصة واحدة والاستمتاع بتجربة تدريبية حماسية
+      </p>
+    </div>
+
+    <div class="classes-grid">
+      @for (cls of singleClasses(); track cls.id) {
+        <div class="class-card">
+          <!-- 1. Category / Icon -->
+          <div class="class-top">
+            <span class="class-icon">{{ cls.icon }}</span>
+            <span class="class-category">{{ cls.category }}</span>
+          </div>
+
+          <!-- 2. Class Title -->
+          <h3 class="class-title">{{ cls.title }}</h3>
+
+          <!-- 3. Session Details (Duration, Schedule, Coach) -->
+          <div class="class-meta">
+            <div class="meta-row">
+              <span class="meta-label">
+                <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                المدة:
+              </span>
+              <span class="meta-val">{{ cls.duration }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">
+                <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                الموعد:
+              </span>
+              <span class="meta-val">{{ cls.schedule }}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">
+                <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                المدرب:
+              </span>
+              <span class="meta-val">{{ cls.coach }}</span>
+            </div>
+          </div>
+
+          <!-- 4. Divider -->
+          <div class="class-divider"></div>
+
+          <!-- 5. Price, Availability & Booking CTA -->
+          <div class="class-footer">
+            <div class="class-price-block">
+              <div class="c-price-wrap">
+                <span class="c-price">{{ cls.price }}</span>
+                <span class="c-curr">{{ cls.currency }}</span>
+              </div>
+              <span class="spots-badge" [class.spots-low]="cls.spotsLeft <= 3">
+                متبقي {{ cls.spotsLeft }} مقاعد
+              </span>
+            </div>
+            <button
+              type="button"
+              class="btn-book"
+              (click)="bookSession(cls)"
+              [disabled]="cls.spotsLeft === 0"
+            >
+              {{ cls.spotsLeft === 0 ? 'مكتملة' : 'احجز الحصة' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Equipment Showcase Section -->
+  <section id="equipment" class="section-container">
+    <div class="section-header">
+      <span class="section-tag">تجهيزات عالمية</span>
+      <h2 class="section-heading">معدات وأجهزة رياضية من الدرجة الأولى</h2>
+      <p class="section-desc">نوفر لك أحدث خطوط الإنتاج العالمية لتحقيق أعلى أداء وأمان حركي</p>
+    </div>
+
+    <div class="equipment-grid">
+      @for (item of equipmentList(); track item.id) {
+        <div class="equipment-card">
+  <div class="eq-header">
+    <div class="eq-icon-wrap">{{ item.icon }}</div>
+    <div class="eq-badges">
+      <span class="eq-tag">{{ item.category }}</span>
+      <span class="eq-count">{{ item.count }} جهاز</span>
+    </div>
+  </div>
+  <div class="eq-body">
+    <h3 class="eq-title">{{ item.name }}</h3>
+    <p class="eq-desc">{{ item.description }}</p>
+  </div>
+</div>
+      }
+    </div>
+  </section>
+
+  <!-- Branches & Hours Section -->
+  <section id="branches" class="section-container section-alt-bg">
+    <div class="section-header">
+      <span class="section-tag">شبكة الفروع</span>
+      <h2 class="section-heading">فروعنا وساعات العمل</h2>
+      <p class="section-desc">تواجد بالقرب منك في أرقى المواقع مع إمكانية الدخول لأي فرع</p>
+    </div>
+
+    <div class="branches-grid">
+      @for (branch of branches(); track branch.id) {
+        <div class="branch-card">
+          <div class="branch-header">
+            <h3 class="branch-name">{{ branch.name }}</h3>
+            @if (branch.is24Hours) {
+              <span class="badge-24h">خدمة 24/7 🔥</span>
+            }
+          </div>
+          <div class="branch-body">
+            <div class="branch-line">
+              <span class="b-icon">📍</span>
+              <span>{{ branch.location }}</span>
+            </div>
+            <div class="branch-line">
+              <span class="b-icon">⏰</span>
+              <span>{{ branch.hours }}</span>
+            </div>
+            <div class="branch-line">
+              <span class="b-icon">📞</span>
+              <span dir="ltr">{{ branch.phone }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Contact Section (uses ContactFormComponent) -->
+  <section id="contact" class="section-container">
+    <div class="section-header">
+      <span class="section-tag">تواصل معنا</span>
+      <h2 class="section-heading">هل لديك أي استفسار؟ نحن هنا لمساعدتك</h2>
+      <p class="section-desc">اترك بياناتك وسيقوم مستشار التدريب بالتواصل معك خلال دقائق</p>
+    </div>
+    <app-contact-form />
+  </section>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="f-logo">🏋️‍♂️</span>
+        <span class="f-title">نادي اللياقة البدنية | Gym Management System</span>
+      </div>
+      <p class="footer-copy">
+        جميع الحقوق محفوظة © 2026 - نظام إدارة الصالات الرياضية والأندية المتكامل.
+      </p>
+    </div>
+  </footer>
+
+</div>

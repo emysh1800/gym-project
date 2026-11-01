@@ -1,0 +1,158 @@
+<div class="admin-view">
+
+  <!-- Admin Top Banner -->
+  <div class="admin-top-banner">
+    <div class="admin-title-group">
+      <div class="admin-badge-icon">⚙️</div>
+      <div>
+        <h1 class="admin-heading">لوحة تحكم إدارة الجيم والاشتراكات (Admin Dashboard)</h1>
+        <p class="admin-subheading">مراقبة المشتركين، صلاحية الاشتراكات، وإحصائيات العمليات اليومية</p>
+      </div>
+    </div>
+    <button type="button" class="btn-return-home" (click)="goHome()">
+      ← العودة للصفحة الرئيسية (Return to Public Home)
+    </button>
+  </div>
+
+  @if (adminStats(); as adminStats) {
+    <!-- Stats Cards Overview -->
+    <div class="admin-stats-grid">
+      <div class="admin-stat-card card-total">
+        <div class="stat-top">
+          <span class="stat-lbl">إجمالي الأعضاء (Total Members)</span>
+          <span class="stat-symbol">👥</span>
+        </div>
+        <div class="stat-big-number">{{ adminStats.totalMembers }}</div>
+        <div class="stat-footer-text">عضو مسجل بالنظام</div>
+      </div>
+
+      <div class="admin-stat-card card-active">
+        <div class="stat-top">
+          <span class="stat-lbl">الاشتراكات النشطة (Active)</span>
+          <span class="stat-symbol">✅</span>
+        </div>
+        <div class="stat-big-number">{{ adminStats.activeSubscriptions }}</div>
+        <div class="stat-footer-text">اشتراك ساري المفعول</div>
+      </div>
+
+      <div class="admin-stat-card card-warning">
+        <div class="stat-top">
+          <span class="stat-lbl">تنتهي قريباً (Expiring Soon)</span>
+          <span class="stat-symbol">⏳</span>
+        </div>
+        <div class="stat-big-number">{{ adminStats.expiringSoon }}</div>
+        <div class="stat-footer-text">خلال الـ 7 أيام القادمة</div>
+      </div>
+
+      <div class="admin-stat-card card-revenue">
+        <div class="stat-top">
+          <span class="stat-lbl">الإيرادات الشهرية</span>
+          <span class="stat-symbol">💰</span>
+        </div>
+        <div class="stat-big-number revenue-text">{{ adminStats.monthlyRevenue }}</div>
+        <div class="stat-footer-text">تحصيل الشهر الحالي</div>
+      </div>
+    </div>
+  }
+
+  <!-- Members Management Table Card -->
+  <div class="admin-table-card">
+    <div class="admin-table-controls">
+      <div class="table-titles">
+        <h2>قائمة إدارة الأعضاء والاشتراكات</h2>
+        <p>إمكانية التجديد المباشر وتعديل حالة الأعضاء فورياً</p>
+      </div>
+      <div class="table-actions-right">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            class="search-field"
+                [ngModel]="adminSearchTerm()"
+                (ngModelChange)="adminSearchTerm.set($event)"
+            placeholder="بحث بالاسم أو الباقة أو الهاتف..."
+          />
+        </div>
+        <div class="count-badge">عدد النتائج: {{ filteredAdminMembers().length }}</div>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>اسم العضو (Name)</th>
+            <th>رقم الهاتف</th>
+            <th>خطة الاشتراك (Subscription Plan)</th>
+            <th>الحالة (Status)</th>
+            <th>تاريخ الانتهاء (End Date)</th>
+            <th>إجراءات سريعة (Actions)</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of filteredAdminMembers(); track m.id) {
+            <tr>
+              <td>
+                <div class="m-profile-cell">
+                  <div class="m-avatar" [style.background-color]="m.avatarBg">
+                    {{ m.name.charAt(0) }}
+                  </div>
+                  <div class="m-names">
+                    <span class="m-fullname">{{ m.name }}</span>
+                    <span class="m-email">{{ m.email }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="m-phone" dir="ltr">{{ m.phone }}</span>
+              </td>
+              <td>
+                <span class="m-plan-tag">{{ m.plan }}</span>
+              </td>
+              <td>
+                <span
+                  class="table-status-pill"
+                  [class.st-active]="m.status === 'Active'"
+                  [class.st-expired]="m.status === 'Expired'"
+                >
+                  <span class="dot"></span>
+                  {{ m.status === 'Active' ? 'نشط (Active)' : 'منتهي (Expired)' }}
+                </span>
+              </td>
+              <td>
+                <span class="m-date">{{ m.endDate }}</span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button
+                    type="button"
+                    class="btn-action-renew"
+                    (click)="renewMember(m)"
+                    title="تجديد الاشتراك لمدة 6 أشهر"
+                  >
+                    🔄 تجديد
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-action-toggle"
+                    (click)="toggleMemberStatus(m)"
+                    title="تغيير الحالة"
+                  >
+                    {{ m.status === 'Active' ? 'تعطيل' : 'تفعيل' }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-state-cell">
+                    لا توجد نتائج تطابق بحثك "{{ adminSearchTerm() }}"
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
