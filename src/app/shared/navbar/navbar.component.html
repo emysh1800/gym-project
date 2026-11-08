@@ -39,26 +39,36 @@
 
     <!-- Desktop Action Buttons (hidden on mobile) -->
     <div class="nav-actions">
-      <button
-        type="button"
-        class="action-btn btn-member"
-        (click)="requestMemberPortal()"
-      >
-        <span class="btn-icon">👤</span>
-        <span class="btn-label">بوابة المشترك</span>
-      </button>
+      @if (!(authService.isLoggedIn$ | async)) {
+        <button
+          type="button"
+          class="action-btn btn-member"
+          (click)="requestMemberPortal()"
+        >
+          <span class="btn-icon">👤</span>
+          <span class="btn-label">بوابة المشترك</span>
+        </button>
 
-      <button
-        type="button"
-        class="action-btn btn-admin"
-        (click)="requestAdminDashboard()"
-      >
-        <span class="btn-icon">⚙️</span>
-        <span class="btn-label">لوحة الإدارة</span>
-      </button>
-
-      @if (authService.isLoggedIn$ | async) {
+        <button
+          type="button"
+          class="action-btn btn-admin"
+          (click)="requestAdminDashboard()"
+        >
+          <span class="btn-icon">⚙️</span>
+          <span class="btn-label">لوحة الإدارة</span>
+        </button>
+      } @else {
         @if ((authService.userRole$ | async) === 'member') {
+          <button
+            type="button"
+            class="action-btn btn-member"
+            (click)="requestMemberPortal()"
+            title="الانتقال إلى بوابة المشترك"
+          >
+            <span class="btn-icon">👤</span>
+            <span class="btn-label">بوابة المشترك</span>
+          </button>
+
           <button
             type="button"
             class="action-btn btn-bookings"
@@ -70,7 +80,19 @@
           </button>
         }
 
-        <div class="user-session-pill">
+        @if ((authService.userRole$ | async) === 'admin') {
+          <button
+            type="button"
+            class="action-btn btn-admin"
+            (click)="requestAdminDashboard()"
+            title="الانتقال إلى لوحة الإدارة"
+          >
+            <span class="btn-icon">⚙️</span>
+            <span class="btn-label">لوحة الإدارة</span>
+          </button>
+        }
+
+        <div class="user-session-pill" [title]="(authService.userRole$ | async) === 'admin' ? 'مدير النظام' : 'المشترك: كابتن أحمد'">
           <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
           <span class="session-name">
             {{ (authService.userRole$ | async) === 'admin' ? 'الأدمن' : 'كابتن أحمد' }}
@@ -84,7 +106,7 @@
           title="تسجيل الخروج من الحساب"
         >
           <span class="btn-icon">🚪</span>
-          <span class="btn-label">تسجيل الخروج</span>
+          <span class="btn-label">خروج</span>
         </button>
       }
     </div>
@@ -136,26 +158,42 @@
     <div class="mobile-nav-divider"></div>
 
     <div class="mobile-nav-actions">
-      <button
-        type="button"
-        class="action-btn btn-member"
-        (click)="requestMemberPortal(); closeMobileMenu()"
-      >
-        <span class="btn-icon">👤</span>
-        <span class="btn-label">بوابة المشترك</span>
-      </button>
+      @if (!(authService.isLoggedIn$ | async)) {
+        <button
+          type="button"
+          class="action-btn btn-member"
+          (click)="requestMemberPortal(); closeMobileMenu()"
+        >
+          <span class="btn-icon">👤</span>
+          <span class="btn-label">بوابة المشترك</span>
+        </button>
 
-      <button
-        type="button"
-        class="action-btn btn-admin"
-        (click)="requestAdminDashboard(); closeMobileMenu()"
-      >
-        <span class="btn-icon">⚙️</span>
-        <span class="btn-label">لوحة الإدارة</span>
-      </button>
+        <button
+          type="button"
+          class="action-btn btn-admin"
+          (click)="requestAdminDashboard(); closeMobileMenu()"
+        >
+          <span class="btn-icon">⚙️</span>
+          <span class="btn-label">لوحة الإدارة</span>
+        </button>
+      } @else {
+        <div class="user-session-pill">
+          <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
+          <span class="session-name">
+            {{ (authService.userRole$ | async) === 'admin' ? 'الأدمن' : 'كابتن أحمد' }}
+          </span>
+        </div>
 
-      @if (authService.isLoggedIn$ | async) {
         @if ((authService.userRole$ | async) === 'member') {
+          <button
+            type="button"
+            class="action-btn btn-member"
+            (click)="requestMemberPortal(); closeMobileMenu()"
+          >
+            <span class="btn-icon">👤</span>
+            <span class="btn-label">بوابة المشترك</span>
+          </button>
+
           <button
             type="button"
             class="action-btn btn-bookings"
@@ -167,12 +205,16 @@
           </button>
         }
 
-        <div class="user-session-pill">
-          <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
-          <span class="session-name">
-            {{ (authService.userRole$ | async) === 'admin' ? 'الأدمن' : 'كابتن أحمد' }}
-          </span>
-        </div>
+        @if ((authService.userRole$ | async) === 'admin') {
+          <button
+            type="button"
+            class="action-btn btn-admin"
+            (click)="requestAdminDashboard(); closeMobileMenu()"
+          >
+            <span class="btn-icon">⚙️</span>
+            <span class="btn-label">لوحة الإدارة</span>
+          </button>
+        }
 
         <button
           type="button"
