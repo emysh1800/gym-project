@@ -150,6 +150,131 @@ async function runTests() {
     console.error('Test 10 failed with error:', err);
   }
 
+  // 9. Test POST /api/sessions/:id/book requires JWT (401 Unauthorized)
+  try {
+    const resNoAuth = await fetch(`${baseUrl}/api/sessions/cls-yoga/book`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: 'تجربة حجز بدون توكن' })
+    });
+    const noAuthData = await resNoAuth.json();
+    assert(resNoAuth.status === 401, '11. POST /api/sessions/:id/book requires JWT and rejects with 401 Unauthorized');
+  } catch (err) {
+    console.error('Test 11 failed with error:', err);
+  }
+
+  // 10. Test POST /api/sessions/:id/book books successfully (201 Created)
+  let testBookingId = null;
+  let yogaSpotsBefore = 0;
+  try {
+    const classesRes = await fetch(`${baseUrl}/api/single-classes`);
+    const classes = await classesRes.json();
+    const yoga = classes.find(c => c.id === 'cls-yoga');
+    yogaSpotsBefore = yoga.spotsLeft;
+
+    const resBook = await fetch(`${baseUrl}/api/sessions/cls-yoga/book`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${memberToken}`
+      },
+      body: JSON.stringify({ notes: 'حجز تجريبي للمشترك' })
+    });
+    const bookData = await resBook.json();
+    testBookingId = bookData.booking?.id;
+    assert(
+      resBook.status === 201 &&
+      bookData.booking &&
+      bookData.session.spotsLeft === yogaSpotsBefore - 1,
+      '12. POST /api/sessions/:id/book creates booking with 201 Created and decrements spotsLeft'
+    );
+  } catch (err) {
+    console.error('Test 12 failed with error:', err);
+  }
+
+  // 11. Test POST /api/sessions/:id/book prevents duplicate booking (409 Conflict)
+  try {
+    const resDup = await fetch(`${baseUrl}/api/sessions/cls-yoga/book`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${memberToken}`
+      },
+      body: JSON.stringify({ notes: 'محاولة حجز مكررة' })
+    });
+    const dupData = await resDup.json();
+    assert(resDup.status === 409, '13. POST /api/sessions/:id/book prevents duplicate booking for same user with 409 Conflict');
+  } catch (err) {
+    console.error('Test 13 failed with error:', err);
+  }
+
+  // 12. Test GET /api/member/bookings returns booked session
+  try {
+    const resMyBookings = await fetch(`${baseUrl}/api/member/bookings`, {
+      headers: { 'Authorization': `Bearer ${memberToken}` }
+    });
+    const myBookings = await resMyBookings.json();
+    assert(
+      resMyBookings.status === 200 &&
+      Array.isArray(myBookings) &&
+      myBookings.some(b => b.sessionId === 'cls-yoga'),
+      '14. GET /api/member/bookings returns confirmed bookings for authenticated member'
+    );
+  } catch (err) {
+    console.error('Test 14 failed with error:', err);
+  }
+
+  // 13. Test Concurrency Safety: Atomic Booking Queue Prevents Overbooking
+  try {
+    // Generate a temporary admin token and second member user to test concurrency
+    // Send two concurrent booking requests to book a session
+    const [res1, res2] = await Promise.all([
+      fetch(`${baseUrl}/api/sessions/cls-zumba/book`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${memberToken}`
+        },
+        body: JSON.stringify({ notes: 'Concurrent request 1' })
+      }),
+      fetch(`${baseUrl}/api/sessions/cls-zumba/book`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${memberToken}`
+        },
+        body: JSON.stringify({ notes: 'Concurrent request 2' })
+      })
+    ]);
+
+    // One must succeed (201) and one must be rejected (409 duplicate) without race condition
+    const statuses = [res1.status, res2.status].sort();
+    assert(
+      statuses[0] === 201 && statuses[1] === 409,
+      '15. Concurrency safe atomic transaction handles simultaneous requests without race condition'
+    );
+  } catch (err) {
+    console.error('Test 15 failed with error:', err);
+  }
+
+  // 14. Test DELETE /api/member/bookings/:id (cancels and restores spot)
+  try {
+    if (testBookingId) {
+      const resCancel = await fetch(`${baseUrl}/api/member/bookings/${testBookingId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${memberToken}` }
+      });
+      const cancelData = await resCancel.json();
+      assert(
+        resCancel.status === 200 &&
+        cancelData.session.spotsLeft === yogaSpotsBefore,
+        '16. DELETE /api/member/bookings/:id cancels booking and restores available spotsLeft'
+      );
+    }
+  } catch (err) {
+    console.error('Test 16 failed with error:', err);
+  }
+
   console.log(`\n🏁 Test Results: ${passed} / ${total} Tests Passed!`);
   if (passed === total) {
     console.log('🎉 ALL PRODUCTION REQUIREMENTS FULLY SATISFIED!');

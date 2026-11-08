@@ -1,10 +1,28 @@
 {
   "credentials": [
     {
+      "username": "manager",
+      "password": "gym@2026",
+      "role": "admin",
+      "name": "كابتن محمد جاد - مدير الفرع"
+    },
+    {
       "username": "admin",
       "password": "123",
       "role": "admin",
       "name": "مدير النظام"
+    },
+    {
+      "username": "captain.ahmed",
+      "password": "gym@2026",
+      "role": "member",
+      "name": "أحمد محمود التميمي"
+    },
+    {
+      "username": "ahmed.tamimi",
+      "password": "gym@2026",
+      "role": "member",
+      "name": "أحمد محمود التميمي"
     },
     {
       "username": "member",
@@ -241,7 +259,7 @@
       "email": "ahmed.tamimi@example.com",
       "phone": "01001234567",
       "plan": "باقة اللياقة 3 أشهر (Pro)",
-      "status": "Active",
+      "status": "Expired",
       "endDate": "2027-09-29",
       "avatarBg": "#2563eb"
     },
@@ -291,5 +309,6 @@
     "activeSubscriptions": 95,
     "expiringSoon": 10,
     "monthlyRevenue": "148,500 ج.م"
-  }
+  },
+  "bookings": []
 }

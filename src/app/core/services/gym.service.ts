@@ -13,6 +13,15 @@ import { MemberSubscription } from '../models/member-subscription.model';
 import { WorkoutDay } from '../models/workout-day.model';
 import { NutritionOverview } from '../models/nutrition-overview.model';
 import { AdminMember, AdminStats } from '../models/admin-member.model';
+import { ClassBooking } from '../models/booking.model';
+
+export interface BookingResponse {
+  success: boolean;
+  statusCode?: number;
+  message: string;
+  booking?: ClassBooking;
+  session: SingleSession;
+}
 
 export interface AdminMemberQueryParams {
   search?: string;
@@ -97,7 +106,29 @@ export class GymService {
     return this.http.delete<any>(`${this.api}/admin/members/${memberId}`);
   }
 
-  bookSession(sessionId: string): Observable<SingleSession> {
-    return this.http.post<SingleSession>(`${this.api}/sessions/${sessionId}/book`, {});
+  bookSession(sessionId: string, notes?: string): Observable<BookingResponse> {
+    return this.http.post<any>(`${this.api}/sessions/${sessionId}/book`, { notes }).pipe(
+      map((res) => {
+        // Handle both nested session and flat session format for backward compatibility
+        const session = res.session || res;
+        return {
+          success: res.success !== false,
+          statusCode: res.statusCode || 200,
+          message: res.message || 'تم حجز الحصة بنجاح',
+          booking: res.booking,
+          session,
+        };
+      })
+    );
+  }
+
+  getMemberBookings(): Observable<ClassBooking[]> {
+    return this.http.get<ClassBooking[]>(`${this.api}/member/bookings`);
+  }
+
+  cancelBooking(bookingId: string): Observable<{ success: boolean; message: string; session?: SingleSession }> {
+    return this.http.delete<{ success: boolean; message: string; session?: SingleSession }>(
+      `${this.api}/member/bookings/${bookingId}`
+    );
   }
 }

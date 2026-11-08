@@ -1,0 +1,158 @@
+<div class="bookings-view" dir="rtl">
+
+  <!-- Top Bar -->
+  <div class="portal-top-bar">
+    <div class="portal-breadcrumb">
+      <span class="bc-link" (click)="goHome()" style="cursor:pointer">الرئيسية</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-link" (click)="goToMemberPortal()" style="cursor:pointer">بوابة المشترك</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-current">حجوزاتي (My Bookings)</span>
+    </div>
+    <div class="top-bar-actions">
+      <button type="button" class="btn-top-action" (click)="goToClasses()">
+        + حجز حصة جديدة
+      </button>
+      <button type="button" class="btn-portal-back" (click)="goHome()">
+        ← العودة للرئيسية
+      </button>
+    </div>
+  </div>
+
+  <!-- Header Banner -->
+  <div class="bookings-header-banner">
+    <div class="banner-content">
+      <div class="banner-icon">📅</div>
+      <div class="banner-text">
+        <h1 class="bookings-title">حجوزاتي للحصص التدريبية (My Booked Classes)</h1>
+        <p class="bookings-subtitle">
+          إليك قائمة بجميع الحصص المنفردة التي قمت بحجزها. يمكنك الاطلاع على المواعيد والمدرب وتفاصيل الحجز في أي وقت.
+        </p>
+      </div>
+    </div>
+    <div class="banner-stats">
+      <div class="stat-pill">
+        <span class="stat-num">{{ bookings().length }}</span>
+        <span class="stat-lbl">حصص محجوزة</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-state-card">
+      <div class="spinner-large"></div>
+      <p>جاري تحميل حجوزاتك التدريبية...</p>
+    </div>
+  } @else if (bookings().length === 0) {
+    <!-- Empty State -->
+    <div class="empty-bookings-card">
+      <div class="empty-icon-box">🧘‍♂️</div>
+      <h2 class="empty-title">لا توجد لديك أي حجوزات حالية</h2>
+      <p class="empty-desc">
+        لم تقم بحجز أي حصة تدريبية حتى الآن. استمتع بتجربة حصص اليوجا، الزومبا، والكروس فيت مع نخبة من أفضل المدربين.
+      </p>
+      <button type="button" class="btn-explore-classes" (click)="goToClasses()">
+        تصفح الحصص التدريبية واحجز الآن ←
+      </button>
+    </div>
+  } @else {
+    <!-- Bookings Cards Grid -->
+    <div class="bookings-grid">
+      @for (bk of bookings(); track bk.id) {
+        <div class="booking-card">
+          <!-- Card Top -->
+          <div class="b-card-top">
+            <div class="b-card-title-group">
+              <span class="b-icon">{{ bk.icon || '🏋️' }}</span>
+              <div>
+                <span class="b-category-badge">{{ bk.category }}</span>
+                <h3 class="b-title">{{ bk.sessionTitle }}</h3>
+              </div>
+            </div>
+            <span class="b-status-pill">
+              <span class="status-dot"></span>
+              {{ bk.status }}
+            </span>
+          </div>
+
+          <!-- Card Details -->
+          <div class="b-details-list">
+            <div class="b-row">
+              <span class="b-row-label">
+                <svg class="b-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                المدرب المعتمد:
+              </span>
+              <strong class="b-row-val">{{ bk.coach }}</strong>
+            </div>
+
+            <div class="b-row">
+              <span class="b-row-label">
+                <svg class="b-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                الموعد:
+              </span>
+              <span class="b-row-val">{{ bk.schedule }}</span>
+            </div>
+
+            <div class="b-row">
+              <span class="b-row-label">
+                <svg class="b-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                المدة:
+              </span>
+              <span class="b-row-val">{{ bk.duration }}</span>
+            </div>
+
+            <div class="b-row">
+              <span class="b-row-label">
+                <svg class="b-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                السعر:
+              </span>
+              <strong class="b-row-val b-price">{{ bk.price }} {{ bk.currency }}</strong>
+            </div>
+
+            @if (bk.notes) {
+              <div class="b-notes-box">
+                <span class="b-notes-lbl">ملاحظاتك:</span>
+                <p class="b-notes-txt">{{ bk.notes }}</p>
+              </div>
+            }
+          </div>
+
+          <!-- Card Footer -->
+          <div class="b-card-footer">
+            <div class="b-meta-info">
+              <span class="b-ref">رقم الحجز: {{ bk.id }}</span>
+              <span class="b-date">تاريخ الحجز: {{ bk.bookingDate | date:'mediumDate' }}</span>
+            </div>
+            <button
+              type="button"
+              class="btn-cancel-booking"
+              (click)="cancelBooking(bk)"
+              [disabled]="cancellingId() === bk.id"
+            >
+              @if (cancellingId() === bk.id) {
+                <span>جاري الإلغاء...</span>
+              } @else {
+                <span>إلغاء الحجز</span>
+              }
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

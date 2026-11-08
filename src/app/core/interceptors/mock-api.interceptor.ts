@@ -72,12 +72,28 @@ function handleMockFallback(req: HttpRequest<unknown>) {
       : throwError(() => new HttpErrorResponse({ status: 404, statusText: 'Not Found' }));
   }
 
+  if (method === 'GET' && url === '/api/member/bookings') {
+    return of(new HttpResponse({ status: 200, body: mockGymDb.getMemberBookings() }));
+  }
+
+  const cancelMatch = url.match(/^\/api\/member\/bookings\/([^/]+)$/);
+  if (method === 'DELETE' && cancelMatch) {
+    const res = mockGymDb.cancelBooking(cancelMatch[1]);
+    return res
+      ? of(new HttpResponse({ status: 200, body: res }))
+      : throwError(() => new HttpErrorResponse({ status: 404, statusText: 'Not Found' }));
+  }
+
   const bookMatch = url.match(/^\/api\/sessions\/([^/]+)\/book$/);
   if (method === 'POST' && bookMatch) {
-    const updated = mockGymDb.bookSession(bookMatch[1]);
-    return updated
-      ? of(new HttpResponse({ status: 200, body: updated }))
-      : throwError(() => new HttpErrorResponse({ status: 404, statusText: 'Not Found' }));
+    const result = mockGymDb.bookSession(bookMatch[1]);
+    if (!result) {
+      return throwError(() => new HttpErrorResponse({ status: 400, statusText: 'Bad Request', error: { message: 'عذراً، لا تتوفر مقاعد شاغرة في هذه الحصة.' } }));
+    }
+    if (result.alreadyBooked) {
+      return throwError(() => new HttpErrorResponse({ status: 409, statusText: 'Conflict', error: { message: 'لقد قمت بحجز هذه الحصة مسبقاً! يمكنك متابعة تفاصيلها في صفحة "حجوزاتي".' } }));
+    }
+    return of(new HttpResponse({ status: 200, body: { success: true, statusCode: 200, message: `تم حجز مقعدك بنجاح في "${result.session.title}"!`, session: result.session, booking: result.booking } }));
   }
 
   return throwError(
@@ -112,7 +128,7 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
       // If server is not running or unreachable (status 0, 502, 503, 504), use fallback
-      if (true) {
+      if (err.status === 0 || err.status === 502 || err.status === 503 || err.status === 504) {
         console.warn('⚡ Real API server is offline on port 3000, falling back to local DB so UI stays interactive:', req.url);
         return handleMockFallback(req);
       }

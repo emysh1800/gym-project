@@ -8,6 +8,7 @@ import { MemberSubscription } from '../models/member-subscription.model';
 import { WorkoutDay } from '../models/workout-day.model';
 import { NutritionOverview } from '../models/nutrition-overview.model';
 import { AdminMember, AdminStats } from '../models/admin-member.model';
+import { ClassBooking } from '../models/booking.model';
 
 export interface LoginPayload {
   username: string;
@@ -22,8 +23,22 @@ export interface LoginApiResult {
 }
 
 const CREDENTIALS = [
+  // Admin credentials
+  { username: 'manager', password: 'gym@2026', role: 'admin' as const },
+  { username: 'manager', password: '123456', role: 'admin' as const },
+  { username: 'manager', password: '123', role: 'admin' as const },
   { username: 'admin', password: '123', role: 'admin' as const },
+  { username: 'admin', password: 'gym@2026', role: 'admin' as const },
+
+  // Member credentials
+  { username: 'captain.ahmed', password: 'gym@2026', role: 'member' as const },
+  { username: 'captain.ahmed', password: '123456', role: 'member' as const },
+  { username: 'captain.ahmed', password: '123', role: 'member' as const },
+  { username: 'ahmed.tamimi', password: 'gym@2026', role: 'member' as const },
+  { username: 'ahmed.tamimi', password: '123456', role: 'member' as const },
+  { username: 'ahmed.tamimi', password: '123', role: 'member' as const },
   { username: 'member', password: '123', role: 'member' as const },
+  { username: 'member', password: 'gym@2026', role: 'member' as const },
 ];
 
 const PRICING_PLANS: PricingPlan[] = [
@@ -379,14 +394,56 @@ export class MockGymDatabase {
     return { ...member };
   }
 
-  bookSession(sessionId: string): SingleSession | null {
+  private bookings: ClassBooking[] = [];
+
+  bookSession(sessionId: string, notes?: string, username = 'member'): { session: SingleSession; booking?: ClassBooking; alreadyBooked?: boolean } | null {
     const session = this.sessions.find((s) => s.id === sessionId);
     if (!session) return null;
+    if (session.spotsLeft <= 0) return null;
 
-    if (session.spotsLeft > 0) {
-      session.spotsLeft--;
+    // Check duplicate
+    const alreadyBooked = this.bookings.some((b) => b.userId === username && b.sessionId === sessionId && b.status !== 'ملغى');
+    if (alreadyBooked) return { session: { ...session }, alreadyBooked: true };
+
+    session.spotsLeft--;
+    const newBooking: ClassBooking = {
+      id: 'bk-' + Date.now(),
+      userId: username,
+      userName: 'أحمد محمود التميمي',
+      sessionId: session.id,
+      sessionTitle: session.title,
+      category: session.category,
+      coach: session.coach,
+      schedule: session.schedule,
+      duration: session.duration,
+      price: session.price,
+      currency: session.currency,
+      icon: session.icon,
+      bookingDate: new Date().toISOString(),
+      status: 'مؤكد',
+      notes: notes || '',
+    };
+    this.bookings.push(newBooking);
+    return { session: { ...session }, booking: newBooking };
+  }
+
+  getMemberBookings(): ClassBooking[] {
+    return this.bookings.map((b) => ({ ...b }));
+  }
+
+  cancelBooking(bookingId: string): { success: boolean; message: string; session?: SingleSession } | null {
+    const idx = this.bookings.findIndex((b) => b.id === bookingId);
+    if (idx === -1) return null;
+    const [booking] = this.bookings.splice(idx, 1);
+    const session = this.sessions.find((s) => s.id === booking.sessionId);
+    if (session) {
+      session.spotsLeft++;
     }
-    return { ...session };
+    return {
+      success: true,
+      message: 'تم إلغاء الحجز بنجاح',
+      session: session ? { ...session } : undefined,
+    };
   }
 }
 

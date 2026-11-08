@@ -1,0 +1,184 @@
+<div class="modal-backdrop" (click)="close()">
+  <div class="modal-dialog modal-booking-dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <span class="modal-role-icon">{{ session.icon || '🏋️' }}</span>
+        <div>
+          <span class="modal-tag">{{ session.category }}</span>
+          <h2 class="modal-title">{{ session.title }}</h2>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="modal-close-btn"
+        (click)="close()"
+        [disabled]="isLoading()"
+        aria-label="إغلاق النافذة"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Error Alert -->
+    @if (errorMessage(); as err) {
+      <div class="login-error-alert" role="alert">
+        <span class="error-alert-icon">⚠️</span>
+        <span class="error-alert-text">{{ err }}</span>
+      </div>
+    }
+
+    <!-- Not Logged-in Alert -->
+    @if (!auth.isLoggedIn) {
+      <div class="auth-warning-box">
+        <div class="auth-warning-content">
+          <span class="warning-icon">🔐</span>
+          <div>
+            <strong>تسجيل الدخول مطلوب</strong>
+            <p>يجب تسجيل الدخول بحساب المشترك لتأكيد حجز المقعد وربطه بحسابك.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-quick-login" (click)="requestLogin()">
+          تسجيل الدخول الآن
+        </button>
+      </div>
+    }
+
+    <!-- Already Booked Notice -->
+    @if (auth.isLoggedIn && alreadyBooked) {
+      <div class="already-booked-box">
+        <span class="box-icon">✓</span>
+        <div>
+          <strong>أنت مشترك بالفعل في هذه الحصة</strong>
+          <p>لديك حجز مؤكد ومسجل في حسابك. يمكنك مراجعته في صفحة "حجوزاتي".</p>
+        </div>
+      </div>
+    }
+
+    <!-- Class Details Card -->
+    <div class="booking-details-card">
+      <h3 class="details-heading">تفاصيل الحصة التدريبية</h3>
+
+      <div class="details-grid">
+        <!-- 1. Coach -->
+        <div class="detail-item">
+          <div class="detail-icon-wrap">
+            <svg class="detail-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">المدرب المعتمد</span>
+            <span class="detail-value">{{ session.coach }}</span>
+          </div>
+        </div>
+
+        <!-- 2. Schedule -->
+        <div class="detail-item">
+          <div class="detail-icon-wrap">
+            <svg class="detail-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">الموعد والتوقيت</span>
+            <span class="detail-value">{{ session.schedule }}</span>
+          </div>
+        </div>
+
+        <!-- 3. Duration -->
+        <div class="detail-item">
+          <div class="detail-icon-wrap">
+            <svg class="detail-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">المدة الزمنية</span>
+            <span class="detail-value">{{ session.duration }}</span>
+          </div>
+        </div>
+
+        <!-- 4. Price -->
+        <div class="detail-item">
+          <div class="detail-icon-wrap">
+            <svg class="detail-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">تكلفة الحصة</span>
+            <span class="detail-value price-highlight">{{ session.price }} {{ session.currency }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spots remaining row -->
+      <div class="spots-status-row" [class.spots-full]="session.spotsLeft === 0" [class.spots-warning]="session.spotsLeft > 0 && session.spotsLeft <= 3">
+        <div class="spots-info">
+          <span class="spots-dot"></span>
+          @if (session.spotsLeft > 0) {
+            <span>المقاعد المتبقية: <strong>{{ session.spotsLeft }} مقاعد متاحة</strong></span>
+          } @else {
+            <span>عذراً، <strong>اكتملت جميع المقاعد في هذه الحصة</strong></span>
+          }
+        </div>
+        <span class="spots-badge-pill" [class.badge-full]="session.spotsLeft === 0">
+          {{ session.spotsLeft === 0 ? 'مكتملة' : (session.spotsLeft <= 3 ? 'مقاعد محدودة 🔥' : 'متاح للحجز') }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Notes Field (Optional) -->
+    @if (auth.isLoggedIn && !alreadyBooked && session.spotsLeft > 0) {
+      <div class="booking-notes-field">
+        <label for="booking-notes">ملاحظات أو طلبات خاصة للكابتن (اختياري)</label>
+        <textarea
+          id="booking-notes"
+          [(ngModel)]="notes"
+          rows="2"
+          placeholder="مثال: يرجى مراعاة تمرين خفيف لأول مرة أو استفسار عن الإحماء..."
+          [disabled]="isLoading()"
+        ></textarea>
+      </div>
+    }
+
+    <!-- Modal Action Buttons (تأكيد الحجز / إلغاء) -->
+    <div class="modal-actions-row">
+      <button
+        type="button"
+        class="btn-modal-submit btn-confirm-booking"
+        (click)="confirmBooking()"
+        [disabled]="isLoading() || !auth.isLoggedIn || alreadyBooked || session.spotsLeft === 0"
+      >
+        @if (isLoading()) {
+          <span class="spinner-icon"></span>
+          <span>جاري تأكيد الحجز...</span>
+        } @else if (session.spotsLeft === 0) {
+          <span>الحصة مكتملة العدد</span>
+        } @else if (alreadyBooked) {
+          <span>الحصة محجوزة مسبقاً</span>
+        } @else {
+          <span>تأكيد الحجز (Confirm Booking)</span>
+        }
+      </button>
+
+      <button
+        type="button"
+        class="btn-modal-cancel"
+        (click)="close()"
+        [disabled]="isLoading()"
+      >
+        إلغاء (Cancel)
+      </button>
+    </div>
+
+  </div>
+</div>

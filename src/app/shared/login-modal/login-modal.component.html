@@ -38,7 +38,7 @@
             type="text"
             [(ngModel)]="loginForm.username"
             name="username"
-            [placeholder]="targetRole === 'admin' ? 'admin' : 'member'"
+            placeholder="أدخل اسم المستخدم أو البريد الإلكتروني"
             autocomplete="username"
             required
           />
@@ -54,7 +54,7 @@
             [type]="showPassword() ? 'text' : 'password'"
             [(ngModel)]="loginForm.password"
             name="password"
-            placeholder="123"
+            placeholder="••••••••"
             autocomplete="current-password"
             required
           />

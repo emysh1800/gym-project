@@ -113,6 +113,35 @@
     </section>
   }
 
+  <!-- Booked Classes Section -->
+  <section class="portal-section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+      <h2 class="portal-section-title" style="margin: 0;">📅 الحصص التدريبية المحجوزة (My Booked Classes)</h2>
+      <button type="button" class="btn-portal-back" (click)="goToBookings()" style="cursor: pointer; background: var(--emerald-light); color: var(--emerald-dark); border-color: var(--emerald-border); font-weight: 700;">
+        إدارة وحذف الحجوزات ({{ myBookings().length }}) ←
+      </button>
+    </div>
+
+    @if (myBookings().length === 0) {
+      <div style="background: #ffffff; border: 1px dashed var(--slate-200); border-radius: 12px; padding: 1.5rem; text-align: center; color: var(--slate-500);">
+        لا توجد حصص محجوزة حالياً. يمكنك حجز حصتك المفضلة من قسم الحصص بالصفحة الرئيسية.
+      </div>
+    } @else {
+      <div class="metrics-grid">
+        @for (bk of myBookings(); track bk.id) {
+          <div class="metric-card" style="border-right: 4px solid var(--emerald); cursor: pointer;" (click)="goToBookings()">
+            <div class="metric-icon">{{ bk.icon || '🏋️' }}</div>
+            <div class="metric-info">
+              <span class="m-label">{{ bk.category }} • {{ bk.schedule }}</span>
+              <span class="m-value" style="font-size: 1.05rem;">{{ bk.sessionTitle }}</span>
+              <small style="color: var(--emerald-dark); font-weight: 700;">المدرب: {{ bk.coach }} | {{ bk.duration }}</small>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
   <!-- Workout & Nutrition Grid -->
   <div class="plan-nutrition-grid">
 

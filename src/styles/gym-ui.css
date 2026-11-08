@@ -433,6 +433,17 @@
   color: #93bbfd;
 }
 
+.btn-bookings {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.btn-bookings:hover {
+  background: rgba(245, 158, 11, 0.28);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #fde68a;
+}
+
 .btn-admin {
   background: rgba(16, 185, 129, 0.12);
   color: #34d399;

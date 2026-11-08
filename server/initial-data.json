@@ -1,7 +1,35 @@
 {
   "credentials": [
-    { "username": "admin", "password": "123", "role": "admin", "name": "مدير النظام" },
-    { "username": "member", "password": "123", "role": "member", "name": "أحمد محمود التميمي" }
+    {
+      "username": "manager",
+      "password": "gym@2026",
+      "role": "admin",
+      "name": "كابتن محمد جاد - مدير الفرع"
+    },
+    {
+      "username": "admin",
+      "password": "123",
+      "role": "admin",
+      "name": "مدير النظام"
+    },
+    {
+      "username": "captain.ahmed",
+      "password": "gym@2026",
+      "role": "member",
+      "name": "أحمد محمود التميمي"
+    },
+    {
+      "username": "ahmed.tamimi",
+      "password": "gym@2026",
+      "role": "member",
+      "name": "أحمد محمود التميمي"
+    },
+    {
+      "username": "member",
+      "password": "123",
+      "role": "member",
+      "name": "أحمد محمود التميمي"
+    }
   ],
   "pricingPlans": [
     {
@@ -174,7 +202,7 @@
   "memberMetrics": {
     "currentWeight": 78.5,
     "height": 178,
-    "targetWeight": 73.0,
+    "targetWeight": 73,
     "bmi": 24.8,
     "bmiCategory": "وزن مثالي (Healthy BMI)"
   },
@@ -225,16 +253,62 @@
     "waterLiters": 3.5
   },
   "adminMembers": [
-    { "id": 1, "name": "أحمد محمود التميمي", "email": "ahmed.tamimi@example.com", "phone": "01001234567", "plan": "باقة اللياقة 3 أشهر (Pro)", "status": "Active", "endDate": "2026-10-01", "avatarBg": "#2563eb" },
-    { "id": 2, "name": "سارة خالد المنصوري", "email": "sara.mansoori@example.com", "phone": "01123456789", "plan": "باقة VIP السنوية الشاملة", "status": "Active", "endDate": "2026-12-31", "avatarBg": "#10b981" },
-    { "id": 3, "name": "طارق عبد الله الزهراني", "email": "tariq.zahrani@example.com", "phone": "01234567890", "plan": "الباقة الشهرية الأساسية", "status": "Expired", "endDate": "2026-09-01", "avatarBg": "#ef4444" },
-    { "id": 4, "name": "منى حسين فهمي", "email": "mona.fahmy@example.com", "phone": "01099887766", "plan": "باقة اللياقة 3 أشهر (Pro)", "status": "Active", "endDate": "2026-09-26", "avatarBg": "#f59e0b" },
-    { "id": 5, "name": "خالد يوسف الألفي", "email": "khaled.alfi@example.com", "phone": "01155443322", "plan": "الباقة الشهرية الأساسية", "status": "Active", "endDate": "2026-10-10", "avatarBg": "#6366f1" }
+    {
+      "id": 1,
+      "name": "أحمد محمود التميمي",
+      "email": "ahmed.tamimi@example.com",
+      "phone": "01001234567",
+      "plan": "باقة اللياقة 3 أشهر (Pro)",
+      "status": "Active",
+      "endDate": "2026-10-01",
+      "avatarBg": "#2563eb"
+    },
+    {
+      "id": 2,
+      "name": "سارة خالد المنصوري",
+      "email": "sara.mansoori@example.com",
+      "phone": "01123456789",
+      "plan": "باقة VIP السنوية الشاملة",
+      "status": "Active",
+      "endDate": "2026-12-31",
+      "avatarBg": "#10b981"
+    },
+    {
+      "id": 3,
+      "name": "طارق عبد الله الزهراني",
+      "email": "tariq.zahrani@example.com",
+      "phone": "01234567890",
+      "plan": "الباقة الشهرية الأساسية",
+      "status": "Expired",
+      "endDate": "2026-09-01",
+      "avatarBg": "#ef4444"
+    },
+    {
+      "id": 4,
+      "name": "منى حسين فهمي",
+      "email": "mona.fahmy@example.com",
+      "phone": "01099887766",
+      "plan": "باقة اللياقة 3 أشهر (Pro)",
+      "status": "Active",
+      "endDate": "2026-09-26",
+      "avatarBg": "#f59e0b"
+    },
+    {
+      "id": 5,
+      "name": "خالد يوسف الألفي",
+      "email": "khaled.alfi@example.com",
+      "phone": "01155443322",
+      "plan": "الباقة الشهرية الأساسية",
+      "status": "Active",
+      "endDate": "2026-10-10",
+      "avatarBg": "#6366f1"
+    }
   ],
   "adminStats": {
     "totalMembers": 120,
     "activeSubscriptions": 95,
     "expiringSoon": 10,
     "monthlyRevenue": "148,500 ج.م"
-  }
+  },
+  "bookings": []
 }

@@ -58,6 +58,18 @@
       </button>
 
       @if (authService.isLoggedIn$ | async) {
+        @if ((authService.userRole$ | async) === 'member') {
+          <button
+            type="button"
+            class="action-btn btn-bookings"
+            routerLink="/my-bookings"
+            title="عرض حجوزاتي للحصص التدريبية"
+          >
+            <span class="btn-icon">📅</span>
+            <span class="btn-label">حجوزاتي</span>
+          </button>
+        }
+
         <div class="user-session-pill">
           <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
           <span class="session-name">
@@ -143,6 +155,18 @@
       </button>
 
       @if (authService.isLoggedIn$ | async) {
+        @if ((authService.userRole$ | async) === 'member') {
+          <button
+            type="button"
+            class="action-btn btn-bookings"
+            routerLink="/my-bookings"
+            (click)="closeMobileMenu()"
+          >
+            <span class="btn-icon">📅</span>
+            <span class="btn-label">حجوزاتي</span>
+          </button>
+        }
+
         <div class="user-session-pill">
           <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
           <span class="session-name">

@@ -18,8 +18,13 @@ export class MemberPortalComponent {
   readonly memberSubscription = toSignal(this.gymService.getMemberSubscription());
   readonly memberSchedule = toSignal(this.gymService.getMemberSchedule(), { initialValue: [] });
   readonly nutritionPlan = toSignal(this.gymService.getNutritionPlan());
+  readonly myBookings = toSignal(this.gymService.getMemberBookings(), { initialValue: [] });
 
   goHome(): void {
     this.router.navigate(['/home']);
+  }
+
+  goToBookings(): void {
+    this.router.navigate(['/my-bookings']);
   }
 }

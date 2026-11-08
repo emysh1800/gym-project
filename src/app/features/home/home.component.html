@@ -157,15 +157,24 @@
             <button
               type="button"
               class="btn-book"
-              (click)="bookSession(cls)"
+              (click)="openBookingModal(cls)"
               [disabled]="cls.spotsLeft === 0"
             >
-              {{ cls.spotsLeft === 0 ? 'مكتملة' : 'احجز الحصة' }}
+              {{ cls.spotsLeft === 0 ? 'مكتملة' : (isSessionBooked(cls.id) ? 'محجوزة لديك ✓' : 'احجز الحصة') }}
             </button>
           </div>
         </div>
       }
     </div>
+
+    @if (selectedSession(); as session) {
+      <app-book-class-modal
+        [session]="session"
+        [alreadyBooked]="isSessionBooked(session.id)"
+        (closed)="closeBookingModal()"
+        (bookingSuccess)="onBookingSuccess($event)"
+      />
+    }
   </section>
 
   <!-- Equipment Showcase Section -->

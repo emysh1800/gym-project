@@ -27,7 +27,10 @@
             "styles": [
               "src/styles.css",
               "src/styles/gym-ui.css"
-            ]
+            ],
+            "optimization": {
+              "fonts": false
+            }
           },
           "configurations": {
             "production": {

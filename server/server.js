@@ -34,7 +34,9 @@ function loadDatabase() {
       console.log('✅ Initialized database.json from initial data template.');
     }
     const data = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    if (!parsed.bookings) parsed.bookings = [];
+    return parsed;
   } catch (err) {
     console.error('❌ Error loading database:', err);
     return null;
@@ -42,6 +44,13 @@ function loadDatabase() {
 }
 
 let db = loadDatabase();
+
+let bookingMutex = Promise.resolve();
+function executeBookingTransaction(task) {
+  const current = bookingMutex.then(task, task);
+  bookingMutex = current.catch(() => {});
+  return current;
+}
 
 function saveDatabase() {
   try {
@@ -1265,7 +1274,9 @@ app.get('/api', (req, res) => {
       'GET /api/member/subscription (JWT Protected)',
       'GET /api/member/schedule (JWT Protected)',
       'GET /api/member/nutrition (JWT Protected)',
-      'POST /api/sessions/:id/book (Zod validated, updates spots)',
+      'POST /api/sessions/:id/book (JWT Protected, Concurrency-Safe, Zod validated)',
+      'GET /api/member/bookings (JWT Protected)',
+      'DELETE /api/member/bookings/:id (JWT Protected, restores spots)',
       'GET /api/admin/stats (RBAC: Admin Only)',
       'GET /api/admin/members (RBAC: Admin Only, Query Params: ?search=&status=&plan=&page=&limit=)',
       'PATCH /api/admin/members/:id/toggle (RBAC: Admin Only, State Partial Update)',
@@ -1363,35 +1374,175 @@ app.get('/api/member/nutrition', authMiddleware, (req, res) => {
   res.status(200).json(db.nutritionPlan || {});
 });
 
-// Book a session (Zod validated, updates spots in DB)
-app.post('/api/sessions/:id/book', validate(bookSessionSchema), (req, res) => {
+// Book a session (Auth required, Zod validated, concurrency-safe atomic booking)
+app.post('/api/sessions/:id/book', authMiddleware, validate(bookSessionSchema), async (req, res) => {
   const sessionId = req.params.id;
-  const session = db.sessions.find((s) => s.id === sessionId);
+  const username = req.user.username;
 
-  if (!session) {
-    return res.status(404).json({
+  try {
+    const result = await executeBookingTransaction(async () => {
+      const currentDb = loadDatabase() || db;
+      currentDb.bookings = currentDb.bookings || [];
+
+      const session = (currentDb.sessions || []).find((s) => s.id === sessionId);
+
+      if (!session) {
+        return {
+          status: 404,
+          body: {
+            success: false,
+            statusCode: 404,
+            message: `الحصة التدريبية برقم '${sessionId}' غير موجودة.`
+          }
+        };
+      }
+
+      // Check if user already booked this session
+      const alreadyBooked = currentDb.bookings.some(
+        (b) => b.userId === username && b.sessionId === sessionId && b.status !== 'ملغى'
+      );
+
+      if (alreadyBooked) {
+        return {
+          status: 409,
+          body: {
+            success: false,
+            statusCode: 409,
+            message: 'لقد قمت بحجز هذه الحصة مسبقاً! يمكنك متابعة تفاصيلها في صفحة "حجوزاتي".'
+          }
+        };
+      }
+
+      // Atomic check for available spots
+      if (session.spotsLeft <= 0) {
+        return {
+          status: 400,
+          body: {
+            success: false,
+            statusCode: 400,
+            message: 'عذراً، لقد اكتمل عدد المقاعد لهذه الحصة ولم تعد هناك مقاعد شاغرة.'
+          }
+        };
+      }
+
+      // Decrement spots safely
+      session.spotsLeft -= 1;
+
+      // Create new booking record
+      const newBooking = {
+        id: 'bk-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
+        userId: username,
+        userName: req.user.name || (username === 'member' ? 'أحمد محمود التميمي' : username),
+        sessionId: session.id,
+        sessionTitle: session.title,
+        category: session.category,
+        coach: session.coach,
+        schedule: session.schedule,
+        duration: session.duration,
+        price: session.price,
+        currency: session.currency,
+        icon: session.icon,
+        bookingDate: new Date().toISOString(),
+        status: 'مؤكد',
+        notes: req.body?.notes || ''
+      };
+
+      currentDb.bookings.push(newBooking);
+      db = currentDb;
+      saveDatabase();
+
+      return {
+        status: 201,
+        body: {
+          success: true,
+          statusCode: 201,
+          message: `تم حجز مقعدك بنجاح في "${session.title}"!`,
+          booking: newBooking,
+          session
+        }
+      };
+    });
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    console.error('Booking transaction error:', err);
+    return res.status(500).json({
       success: false,
-      statusCode: 404,
-      message: `الحصة التدريبية برقم '${sessionId}' غير موجودة.`
+      statusCode: 500,
+      message: 'حدث خطأ أثناء معالجة الحجز، يرجى المحاولة مرة أخرى.'
     });
   }
+});
 
-  if (session.spotsLeft > 0) {
-    session.spotsLeft -= 1;
-    saveDatabase();
-    return res.status(200).json({
-      success: true,
-      statusCode: 200,
-      message: `تم حجز مقعدك بنجاح في ${session.title}!`,
-      session
+// GET /api/member/bookings (JWT Protected: member's own bookings)
+app.get('/api/member/bookings', authMiddleware, (req, res) => {
+  const username = req.user.username;
+  db.bookings = db.bookings || [];
+  const memberBookings = db.bookings.filter(b => b.userId === username);
+  res.status(200).json(memberBookings);
+});
+
+// DELETE /api/member/bookings/:id (JWT Protected: Cancel booking & restore spot)
+app.delete('/api/member/bookings/:id', authMiddleware, async (req, res) => {
+  const bookingId = req.params.id;
+  const username = req.user.username;
+
+  try {
+    const result = await executeBookingTransaction(async () => {
+      const currentDb = loadDatabase() || db;
+      currentDb.bookings = currentDb.bookings || [];
+
+      const bookingIndex = currentDb.bookings.findIndex(
+        (b) => b.id === bookingId && b.userId === username
+      );
+
+      if (bookingIndex === -1) {
+        return {
+          status: 404,
+          body: {
+            success: false,
+            statusCode: 404,
+            message: 'الحجز المطلوب غير موجود أو لا ينتمي لحسابك.'
+          }
+        };
+      }
+
+      const booking = currentDb.bookings[bookingIndex];
+      const session = (currentDb.sessions || []).find((s) => s.id === booking.sessionId);
+      if (session) {
+        session.spotsLeft += 1;
+      }
+
+      currentDb.bookings.splice(bookingIndex, 1);
+      db = currentDb;
+      saveDatabase();
+
+      return {
+        status: 200,
+        body: {
+          success: true,
+          statusCode: 200,
+          message: `تم إلغاء الحجز في "${booking.sessionTitle}" بنجاح واسترجاع المقعد الشاغر.`,
+          session
+        }
+      };
+    });
+
+    return res.status(result.status).json(result.body);
+  } catch (err) {
+    console.error('Cancel booking error:', err);
+    return res.status(500).json({
+      success: false,
+      statusCode: 500,
+      message: 'حدث خطأ أثناء إلغاء الحجز.'
     });
   }
+});
 
-  return res.status(400).json({
-    success: false,
-    statusCode: 400,
-    message: 'عذراً، لا توجد مقاعد شاغرة لهذه الحصة.'
-  });
+// GET /api/admin/bookings (RBAC: Admin Only)
+app.get('/api/admin/bookings', authMiddleware, requireRole('admin'), (req, res) => {
+  db.bookings = db.bookings || [];
+  res.status(200).json(db.bookings);
 });
 
 // -------------------------------------------------------------

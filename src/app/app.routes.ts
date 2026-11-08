@@ -22,6 +22,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'my-bookings',
+    loadComponent: () =>
+      import('./features/my-bookings/my-bookings.component').then(
+        (m) => m.MyBookingsComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'admin-dashboard',
     loadComponent: () =>
       import('./features/admin-dashboard/admin-dashboard.component').then(
