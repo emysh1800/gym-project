@@ -7,6 +7,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PricingPlan } from '../../core/models/pricing-plan.model';
 import { SingleSession } from '../../core/models/single-session.model';
+import { mockGymDb } from '../../core/data/mock-gym.db';
 import { ContactFormComponent } from '../../shared/contact-form/contact-form.component';
 import { BookClassModalComponent } from '../../shared/book-class-modal/book-class-modal.component';
 
@@ -23,11 +24,15 @@ export class HomeComponent implements OnInit {
   private router = inject(Router);
 
   readonly pricingPlans = toSignal(this.gymService.getPricingPlans(), {
-    initialValue: [] as PricingPlan[],
+    initialValue: mockGymDb.getPricingPlans(),
   });
-  readonly equipmentList = toSignal(this.gymService.getEquipment(), { initialValue: [] });
-  readonly branches = toSignal(this.gymService.getBranches(), { initialValue: [] });
-  readonly singleClasses = signal<SingleSession[]>([]);
+  readonly equipmentList = toSignal(this.gymService.getEquipment(), {
+    initialValue: mockGymDb.getEquipment(),
+  });
+  readonly branches = toSignal(this.gymService.getBranches(), {
+    initialValue: mockGymDb.getBranches(),
+  });
+  readonly singleClasses = signal<SingleSession[]>(mockGymDb.getSingleClasses());
 
   // Booking Modal State
   readonly selectedSession = signal<SingleSession | null>(null);

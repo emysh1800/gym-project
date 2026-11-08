@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { mockGymDb } from '../data/mock-gym.db';
 
 import { PricingPlan } from '../models/pricing-plan.model';
 import { SingleSession } from '../models/single-session.model';
@@ -38,43 +39,63 @@ export class GymService {
   constructor(private http: HttpClient) {}
 
   getPricingPlans(): Observable<PricingPlan[]> {
-    return this.http.get<PricingPlan[]>(`${this.api}/pricing-plans`);
+    return this.http.get<PricingPlan[]>(`${this.api}/pricing-plans`).pipe(
+      catchError(() => of(mockGymDb.getPricingPlans()))
+    );
   }
 
   getSingleClasses(): Observable<SingleSession[]> {
-    return this.http.get<SingleSession[]>(`${this.api}/single-classes`);
+    return this.http.get<SingleSession[]>(`${this.api}/single-classes`).pipe(
+      catchError(() => of(mockGymDb.getSingleClasses()))
+    );
   }
 
   getEquipment(): Observable<EquipmentItem[]> {
-    return this.http.get<EquipmentItem[]>(`${this.api}/equipment`);
+    return this.http.get<EquipmentItem[]>(`${this.api}/equipment`).pipe(
+      catchError(() => of(mockGymDb.getEquipment()))
+    );
   }
 
   getBranches(): Observable<GymBranch[]> {
-    return this.http.get<GymBranch[]>(`${this.api}/branches`);
+    return this.http.get<GymBranch[]>(`${this.api}/branches`).pipe(
+      catchError(() => of(mockGymDb.getBranches()))
+    );
   }
 
   getCurrentMember(): Observable<CurrentMember> {
-    return this.http.get<CurrentMember>(`${this.api}/member/current`);
+    return this.http.get<CurrentMember>(`${this.api}/member/current`).pipe(
+      catchError(() => of(mockGymDb.getCurrentMember()))
+    );
   }
 
   getMemberMetrics(): Observable<MemberMetrics> {
-    return this.http.get<MemberMetrics>(`${this.api}/member/metrics`);
+    return this.http.get<MemberMetrics>(`${this.api}/member/metrics`).pipe(
+      catchError(() => of(mockGymDb.getMemberMetrics()))
+    );
   }
 
   getMemberSubscription(): Observable<MemberSubscription> {
-    return this.http.get<MemberSubscription>(`${this.api}/member/subscription`);
+    return this.http.get<MemberSubscription>(`${this.api}/member/subscription`).pipe(
+      catchError(() => of(mockGymDb.getMemberSubscription()))
+    );
   }
 
   getMemberSchedule(): Observable<WorkoutDay[]> {
-    return this.http.get<WorkoutDay[]>(`${this.api}/member/schedule`);
+    return this.http.get<WorkoutDay[]>(`${this.api}/member/schedule`).pipe(
+      catchError(() => of(mockGymDb.getMemberSchedule()))
+    );
   }
 
   getNutritionPlan(): Observable<NutritionOverview> {
-    return this.http.get<NutritionOverview>(`${this.api}/member/nutrition`);
+    return this.http.get<NutritionOverview>(`${this.api}/member/nutrition`).pipe(
+      catchError(() => of(mockGymDb.getNutritionPlan()))
+    );
   }
 
   getAdminStats(): Observable<AdminStats> {
-    return this.http.get<AdminStats>(`${this.api}/admin/stats`);
+    return this.http.get<AdminStats>(`${this.api}/admin/stats`).pipe(
+      catchError(() => of(mockGymDb.getAdminStats()))
+    );
   }
 
   getAdminMembers(params?: AdminMemberQueryParams): Observable<AdminMember[]> {
@@ -86,7 +107,8 @@ export class GymService {
     if (params?.limit) httpParams = httpParams.set('limit', params.limit);
 
     return this.http.get<any>(`${this.api}/admin/members`, { params: httpParams }).pipe(
-      map((res) => (Array.isArray(res) ? res : res.data || []))
+      map((res) => (Array.isArray(res) ? res : res.data || [])),
+      catchError(() => of(mockGymDb.getAdminMembers()))
     );
   }
 
@@ -123,7 +145,9 @@ export class GymService {
   }
 
   getMemberBookings(): Observable<ClassBooking[]> {
-    return this.http.get<ClassBooking[]>(`${this.api}/member/bookings`);
+    return this.http.get<ClassBooking[]>(`${this.api}/member/bookings`).pipe(
+      catchError(() => of(mockGymDb.getMemberBookings()))
+    );
   }
 
   cancelBooking(bookingId: string): Observable<{ success: boolean; message: string; session?: SingleSession }> {

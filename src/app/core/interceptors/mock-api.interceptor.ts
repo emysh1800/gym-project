@@ -127,12 +127,9 @@ export const mockApiInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
-      // If server is not running or unreachable (status 0, 502, 503, 504), use fallback
-      if (err.status === 0 || err.status === 502 || err.status === 503 || err.status === 504) {
-        console.warn('⚡ Real API server is offline on port 3000, falling back to local DB so UI stays interactive:', req.url);
-        return handleMockFallback(req);
-      }
-      return throwError(() => err);
+      // If server is not running or unreachable or 404 on static hosting, use fallback
+      console.warn('⚡ Real API server is offline on port 3000, falling back to local DB so UI stays interactive:', req.url);
+      return handleMockFallback(req);
     })
   );
 };
