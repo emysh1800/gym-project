@@ -49,17 +49,18 @@
           <span class="btn-label">تسجيل الدخول</span>
         </button>
       } @else {
-        @if ((authService.userRole$ | async) === 'member') {
-          <button
-            type="button"
-            class="action-btn btn-member"
-            (click)="requestMemberPortal()"
-            title="الانتقال إلى بوابة المشترك"
-          >
-            <span class="btn-icon">👤</span>
-            <span class="btn-label">بوابة المشترك</span>
-          </button>
+        <div
+          class="user-session-pill"
+          (click)="onSessionPillClick()"
+          [title]="(authService.userRole$ | async) === 'admin' ? 'الانتقال إلى لوحة الإدارة' : 'الانتقال إلى حساب المشترك (كابتن أحمد)'"
+        >
+          <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
+          <span class="session-name">
+            {{ (authService.userRole$ | async) === 'admin' ? 'الأدمن' : 'كابتن أحمد' }}
+          </span>
+        </div>
 
+        @if ((authService.userRole$ | async) === 'member') {
           <button
             type="button"
             class="action-btn btn-bookings"
@@ -82,13 +83,6 @@
             <span class="btn-label">لوحة الإدارة</span>
           </button>
         }
-
-        <div class="user-session-pill" [title]="(authService.userRole$ | async) === 'admin' ? 'مدير النظام' : 'المشترك: كابتن أحمد'">
-          <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
-          <span class="session-name">
-            {{ (authService.userRole$ | async) === 'admin' ? 'الأدمن' : 'كابتن أحمد' }}
-          </span>
-        </div>
 
         <button
           type="button"
@@ -159,7 +153,11 @@
           <span class="btn-label">تسجيل الدخول</span>
         </button>
       } @else {
-        <div class="user-session-pill">
+        <div
+          class="user-session-pill"
+          (click)="onSessionPillClick(); closeMobileMenu()"
+          [title]="(authService.userRole$ | async) === 'admin' ? 'الانتقال إلى لوحة الإدارة' : 'الانتقال إلى حساب المشترك (كابتن أحمد)'"
+        >
           <span class="session-avatar">{{ (authService.userRole$ | async) === 'admin' ? '👑' : '🏋️' }}</span>
           <span class="session-name">
             {{ (authService.userRole$ | async) === 'admin' ? 'الأدمن' : 'كابتن أحمد' }}
@@ -167,15 +165,6 @@
         </div>
 
         @if ((authService.userRole$ | async) === 'member') {
-          <button
-            type="button"
-            class="action-btn btn-member"
-            (click)="requestMemberPortal(); closeMobileMenu()"
-          >
-            <span class="btn-icon">👤</span>
-            <span class="btn-label">بوابة المشترك</span>
-          </button>
-
           <button
             type="button"
             class="action-btn btn-bookings"

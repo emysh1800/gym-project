@@ -46,6 +46,14 @@ export class NavbarComponent {
     this.authService.openLoginModal();
   }
 
+  onSessionPillClick(): void {
+    if (this.authService.userRole === 'admin') {
+      this.router.navigate(['/admin-dashboard']);
+    } else {
+      this.router.navigate(['/member-portal']);
+    }
+  }
+
   requestMemberPortal(): void {
     this.router.navigate(['/member-portal']);
   }
