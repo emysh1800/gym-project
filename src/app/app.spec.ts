@@ -43,33 +43,33 @@ describe('AuthService', () => {
   });
 
   it('should reject invalid credentials', async () => {
-    const result = await firstValueFrom(auth.login('wrong', 'pass', 'admin'));
+    const result = await firstValueFrom(auth.login('wrong', 'pass'));
     expect(result.success).toBe(false);
     expect(auth.isLoggedIn).toBe(false);
   });
 
   it('should login as admin with admin / 123 or manager / gym@2026', async () => {
-    const resultOld = await firstValueFrom(auth.login('admin', '123', 'admin'));
+    const resultOld = await firstValueFrom(auth.login('admin', '123'));
     expect(resultOld.success).toBe(true);
     expect(auth.userRole).toBe('admin');
 
-    const resultNew = await firstValueFrom(auth.login('manager', 'gym@2026', 'admin'));
+    const resultNew = await firstValueFrom(auth.login('manager', 'gym@2026'));
     expect(resultNew.success).toBe(true);
     expect(auth.userRole).toBe('admin');
   });
 
   it('should login as member with member / 123 or captain.ahmed / gym@2026', async () => {
-    const resultOld = await firstValueFrom(auth.login('member', '123', 'member'));
+    const resultOld = await firstValueFrom(auth.login('member', '123'));
     expect(resultOld.success).toBe(true);
     expect(auth.userRole).toBe('member');
 
-    const resultNew = await firstValueFrom(auth.login('captain.ahmed', 'gym@2026', 'member'));
+    const resultNew = await firstValueFrom(auth.login('captain.ahmed', 'gym@2026'));
     expect(resultNew.success).toBe(true);
     expect(auth.userRole).toBe('member');
   });
 
   it('should logout and clear session', async () => {
-    await firstValueFrom(auth.login('admin', '123', 'admin'));
+    await firstValueFrom(auth.login('admin', '123'));
     auth.logout();
     expect(auth.isLoggedIn).toBe(false);
     expect(auth.userRole).toBeNull();
@@ -87,7 +87,7 @@ describe('GymService Bookings & Classes', () => {
     });
     auth = TestBed.inject(AuthService);
     gymService = TestBed.inject(GymService);
-    await firstValueFrom(auth.login('member', '123', 'member'));
+    await firstValueFrom(auth.login('member', '123'));
   });
 
   it('should retrieve single classes list', async () => {

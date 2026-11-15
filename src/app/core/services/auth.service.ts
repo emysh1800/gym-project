@@ -20,11 +20,11 @@ const LS_TOKEN = 'gym_token';
 export class AuthService {
   private _isLoggedIn$ = new BehaviorSubject<boolean>(this.restoreLoggedIn());
   private _userRole$ = new BehaviorSubject<UserRole>(this.restoreRole());
-  private _loginModalRole$ = new BehaviorSubject<'admin' | 'member' | null>(null);
+  private _loginModalOpen$ = new BehaviorSubject<boolean>(false);
 
   readonly isLoggedIn$ = this._isLoggedIn$.asObservable();
   readonly userRole$ = this._userRole$.asObservable();
-  readonly loginModalRole$ = this._loginModalRole$.asObservable();
+  readonly loginModalOpen$ = this._loginModalOpen$.asObservable();
 
   get isLoggedIn(): boolean {
     return this._isLoggedIn$.getValue();
@@ -36,24 +36,19 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(
-    username: string,
-    password: string,
-    targetRole: 'admin' | 'member'
-  ): Observable<LoginResult> {
+  login(username: string, password: string): Observable<LoginResult> {
     return this.http
       .post<LoginResult>('/api/auth/login', {
         username: username.trim().toLowerCase(),
         password: password.trim(),
-        targetRole,
       })
       .pipe(
         tap((result) => {
-          if (result.success) {
+          if (result.success && result.role) {
             if (result.token) {
               localStorage.setItem(LS_TOKEN, result.token);
             }
-            this.setSession(targetRole);
+            this.setSession(result.role);
           }
         })
       );
@@ -67,16 +62,12 @@ export class AuthService {
     localStorage.removeItem(LS_TOKEN);
   }
 
-  openLoginModal(role: 'admin' | 'member'): void {
-    this._loginModalRole$.next(role);
+  openLoginModal(_role?: 'admin' | 'member'): void {
+    this._loginModalOpen$.next(true);
   }
 
   closeLoginModal(): void {
-    this._loginModalRole$.next(null);
-  }
-
-  getDemoCredentials(role: 'admin' | 'member'): { username: string; password: string } {
-    return { username: role, password: '123' };
+    this._loginModalOpen$.next(false);
   }
 
   private setSession(role: 'admin' | 'member'): void {

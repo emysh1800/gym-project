@@ -13,7 +13,6 @@ import { ClassBooking } from '../models/booking.model';
 export interface LoginPayload {
   username: string;
   password: string;
-  targetRole: 'admin' | 'member';
 }
 
 export interface LoginApiResult {
@@ -25,20 +24,12 @@ export interface LoginApiResult {
 const CREDENTIALS = [
   // Admin credentials
   { username: 'manager', password: 'gym@2026', role: 'admin' as const },
-  { username: 'manager', password: '123456', role: 'admin' as const },
-  { username: 'manager', password: '123', role: 'admin' as const },
   { username: 'admin', password: '123', role: 'admin' as const },
-  { username: 'admin', password: 'gym@2026', role: 'admin' as const },
 
   // Member credentials
   { username: 'captain.ahmed', password: 'gym@2026', role: 'member' as const },
-  { username: 'captain.ahmed', password: '123456', role: 'member' as const },
-  { username: 'captain.ahmed', password: '123', role: 'member' as const },
   { username: 'ahmed.tamimi', password: 'gym@2026', role: 'member' as const },
-  { username: 'ahmed.tamimi', password: '123456', role: 'member' as const },
-  { username: 'ahmed.tamimi', password: '123', role: 'member' as const },
   { username: 'member', password: '123', role: 'member' as const },
-  { username: 'member', password: 'gym@2026', role: 'member' as const },
 ];
 
 const PRICING_PLANS: PricingPlan[] = [
@@ -308,7 +299,7 @@ export class MockGymDatabase {
     }
 
     const match = CREDENTIALS.find(
-      (c) => c.username === username && c.password === password && c.role === payload.targetRole
+      (c) => c.username === username && c.password === password
     );
 
     if (!match) {

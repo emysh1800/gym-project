@@ -35,7 +35,7 @@ export class BookClassModalComponent {
 
   requestLogin(): void {
     this.close();
-    this.auth.openLoginModal('member');
+    this.auth.openLoginModal();
   }
 
   confirmBooking(): void {
@@ -43,7 +43,7 @@ export class BookClassModalComponent {
 
     if (!this.auth.isLoggedIn) {
       this.errorMessage.set('يجب عليك تسجيل الدخول أولاً لتتمكن من حجز الحصة.');
-      this.auth.openLoginModal('member');
+      this.auth.openLoginModal();
       return;
     }
 

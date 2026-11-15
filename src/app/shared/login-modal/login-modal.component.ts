@@ -1,7 +1,6 @@
 import {
   Component,
   EventEmitter,
-  Input,
   Output,
   inject,
   signal,
@@ -19,7 +18,6 @@ import { NotificationService } from '../../core/services/notification.service';
   templateUrl: './login-modal.component.html',
 })
 export class LoginModalComponent {
-  @Input() targetRole: 'admin' | 'member' = 'member';
   @Output() closed = new EventEmitter<void>();
 
   private authService = inject(AuthService);
@@ -42,22 +40,20 @@ export class LoginModalComponent {
     this.showPassword.update((visible) => !visible);
   }
 
-
-
   handleLogin(): void {
     if (this.isLoading()) return;
     this.isLoading.set(true);
     this.loginError.set(null);
 
     this.authService
-      .login(this.loginForm.username, this.loginForm.password, this.targetRole)
+      .login(this.loginForm.username, this.loginForm.password)
       .subscribe({
         next: (result) => {
           this.isLoading.set(false);
           if (result.success) {
             this.notification.show(result.message);
             this.close();
-            const route = this.targetRole === 'admin' ? '/admin-dashboard' : '/member-portal';
+            const route = result.role === 'admin' ? '/admin-dashboard' : '/member-portal';
             this.router.navigate([route]);
           } else {
             this.loginError.set(result.message);

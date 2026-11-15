@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit {
     if (this.authService.isLoggedIn) {
       this.router.navigate(['/member-portal']);
     } else {
-      this.authService.openLoginModal('member');
+      this.authService.openLoginModal();
     }
   }
 

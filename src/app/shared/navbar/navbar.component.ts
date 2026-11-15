@@ -42,20 +42,16 @@ export class NavbarComponent {
     }
   }
 
+  openLogin(): void {
+    this.authService.openLoginModal();
+  }
+
   requestMemberPortal(): void {
-    if (this.authService.isLoggedIn) {
-      this.router.navigate(['/member-portal']);
-    } else {
-      this.authService.openLoginModal('member');
-    }
+    this.router.navigate(['/member-portal']);
   }
 
   requestAdminDashboard(): void {
-    if (this.authService.userRole === 'admin') {
-      this.router.navigate(['/admin-dashboard']);
-    } else {
-      this.authService.openLoginModal('admin');
-    }
+    this.router.navigate(['/admin-dashboard']);
   }
 
   logout(): void {

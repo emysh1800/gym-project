@@ -42,20 +42,11 @@
       @if (!(authService.isLoggedIn$ | async)) {
         <button
           type="button"
-          class="action-btn btn-member"
-          (click)="requestMemberPortal()"
+          class="action-btn btn-login"
+          (click)="openLogin()"
         >
-          <span class="btn-icon">👤</span>
-          <span class="btn-label">بوابة المشترك</span>
-        </button>
-
-        <button
-          type="button"
-          class="action-btn btn-admin"
-          (click)="requestAdminDashboard()"
-        >
-          <span class="btn-icon">⚙️</span>
-          <span class="btn-label">لوحة الإدارة</span>
+          <span class="btn-icon">🔐</span>
+          <span class="btn-label">تسجيل الدخول</span>
         </button>
       } @else {
         @if ((authService.userRole$ | async) === 'member') {
@@ -161,20 +152,11 @@
       @if (!(authService.isLoggedIn$ | async)) {
         <button
           type="button"
-          class="action-btn btn-member"
-          (click)="requestMemberPortal(); closeMobileMenu()"
+          class="action-btn btn-login"
+          (click)="openLogin(); closeMobileMenu()"
         >
-          <span class="btn-icon">👤</span>
-          <span class="btn-label">بوابة المشترك</span>
-        </button>
-
-        <button
-          type="button"
-          class="action-btn btn-admin"
-          (click)="requestAdminDashboard(); closeMobileMenu()"
-        >
-          <span class="btn-icon">⚙️</span>
-          <span class="btn-label">لوحة الإدارة</span>
+          <span class="btn-icon">🔐</span>
+          <span class="btn-label">تسجيل الدخول</span>
         </button>
       } @else {
         <div class="user-session-pill">

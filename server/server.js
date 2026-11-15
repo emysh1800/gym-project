@@ -71,9 +71,7 @@ const loginSchema = z.object({
     .min(2, 'اسم المستخدم يجب أن يتكون من حرفين على الأقل'),
   password: z.string({ required_error: 'كلمة المرور مطلوبة' })
     .min(3, 'كلمة المرور يجب أن تتكون من 3 أحرف على الأقل'),
-  targetRole: z.enum(['admin', 'member'], {
-    errorMap: () => ({ message: 'يجب تحديد نوع الحساب: admin أو member' })
-  })
+  targetRole: z.enum(['admin', 'member']).optional()
 });
 
 const bookSessionSchema = z.object({
@@ -1296,15 +1294,18 @@ app.post('/api/auth/login', validate(loginSchema), (req, res) => {
   const cleanUser = username.trim().toLowerCase();
   const cleanPass = password.trim();
 
-  const user = db.credentials.find(
-    (c) => c.username.toLowerCase() === cleanUser && c.password === cleanPass && c.role === targetRole
-  );
+  const user = db.credentials.find((c) => {
+    const matchUser = c.username.toLowerCase() === cleanUser;
+    const matchPass = c.password === cleanPass;
+    const matchRole = targetRole ? c.role === targetRole : true;
+    return matchUser && matchPass && matchRole;
+  });
 
   if (!user) {
     return res.status(401).json({
       success: false,
       statusCode: 401,
-      message: 'بيانات الدخول غير صحيحة! يرجى التحقق من اسم المستخدم وكلمة المرور ونوع الحساب.'
+      message: 'بيانات الدخول غير صحيحة! يرجى التحقق من اسم المستخدم وكلمة المرور.'
     });
   }
 
