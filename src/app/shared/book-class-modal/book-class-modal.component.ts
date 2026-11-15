@@ -37,12 +37,12 @@ export class BookClassModalComponent implements OnInit {
 
   close(): void {
     if (this.isLoading()) return;
+    this.gymService.clearPendingBooking();
     this.closed.emit();
   }
 
   requestLogin(): void {
     this.gymService.setPendingBooking(this.session, this.notes);
-    this.close();
     this.auth.openLoginModal();
   }
 

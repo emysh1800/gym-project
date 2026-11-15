@@ -34,6 +34,10 @@ export class AuthService {
     return this._userRole$.getValue();
   }
 
+  get isLoginModalOpen(): boolean {
+    return this._loginModalOpen$.getValue();
+  }
+
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<LoginResult> {

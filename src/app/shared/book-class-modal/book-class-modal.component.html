@@ -50,8 +50,8 @@
       <div class="confirm-step-banner">
         <span class="step-icon">🎯</span>
         <div class="step-info">
-          <strong>خطوة تأكيد الحجز</strong>
-          <p>أنت الآن مسجل الدخول. يرجى مراجعة تفاصيل الحصة، ثم الضغط على "تأكيد الحجز" أدناه لتثبيت مقعدك.</p>
+          <strong>تأكيد حجز المقعد (Booking Confirmation)</strong>
+          <p>أنت الآن مسجل الدخول كـ {{ (auth.userRole$ | async) === 'admin' ? 'مدير النظام' : 'مشترك' }}. يرجى الضغط على زر "تأكيد الحجز الآن" بالأسفل لتثبيت مقعدك فوراً.</p>
         </div>
       </div>
     }

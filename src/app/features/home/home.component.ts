@@ -86,7 +86,9 @@ export class HomeComponent implements OnInit {
   }
 
   closeBookingModal(): void {
-    this.gymService.clearPendingBooking();
+    if (!this.authService.isLoginModalOpen) {
+      this.gymService.clearPendingBooking();
+    }
     this.selectedSession.set(null);
   }
 

@@ -48,6 +48,10 @@
   animation: modalFadeIn 0.2s ease-out;
 }
 
+.login-modal-backdrop {
+  z-index: 20000 !important;
+}
+
 @keyframes modalFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
