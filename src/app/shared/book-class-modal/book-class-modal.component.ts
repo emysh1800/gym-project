@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SingleSession } from '../../core/models/single-session.model';
@@ -13,7 +13,7 @@ import { NotificationService } from '../../core/services/notification.service';
   templateUrl: './book-class-modal.component.html',
   styleUrls: ['./book-class-modal.component.css'],
 })
-export class BookClassModalComponent {
+export class BookClassModalComponent implements OnInit {
   @Input({ required: true }) session!: SingleSession;
   @Input() alreadyBooked = false;
 
@@ -28,12 +28,20 @@ export class BookClassModalComponent {
   readonly errorMessage = signal<string | null>(null);
   notes = '';
 
+  ngOnInit(): void {
+    const pending = this.gymService.getPendingBooking();
+    if (pending && pending.session.id === this.session.id && pending.notes) {
+      this.notes = pending.notes;
+    }
+  }
+
   close(): void {
     if (this.isLoading()) return;
     this.closed.emit();
   }
 
   requestLogin(): void {
+    this.gymService.setPendingBooking(this.session, this.notes);
     this.close();
     this.auth.openLoginModal();
   }
@@ -42,8 +50,7 @@ export class BookClassModalComponent {
     if (this.isLoading()) return;
 
     if (!this.auth.isLoggedIn) {
-      this.errorMessage.set('يجب عليك تسجيل الدخول أولاً لتتمكن من حجز الحصة.');
-      this.auth.openLoginModal();
+      this.requestLogin();
       return;
     }
 
@@ -63,6 +70,7 @@ export class BookClassModalComponent {
     this.gymService.bookSession(this.session.id, this.notes).subscribe({
       next: (res) => {
         this.isLoading.set(false);
+        this.gymService.clearPendingBooking();
         this.notification.show(res.message || `تم حجز مقعدك بنجاح في "${this.session.title}"!`);
         this.bookingSuccess.emit({
           session: res.session,

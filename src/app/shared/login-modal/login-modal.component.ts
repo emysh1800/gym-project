@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../core/services/auth.service';
+import { GymService } from '../../core/services/gym.service';
 import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
@@ -21,6 +22,7 @@ export class LoginModalComponent {
   @Output() closed = new EventEmitter<void>();
 
   private authService = inject(AuthService);
+  private gymService = inject(GymService);
   private notification = inject(NotificationService);
   private router = inject(Router);
 
@@ -53,8 +55,18 @@ export class LoginModalComponent {
           if (result.success) {
             this.notification.show(result.message);
             this.close();
-            const route = result.role === 'admin' ? '/admin-dashboard' : '/member-portal';
-            this.router.navigate([route]);
+
+            const pending = this.gymService.getPendingBooking();
+            if (pending && result.role === 'member') {
+              // Ensure user is on /home so the session confirmation modal shows immediately
+              if (this.router.url !== '/' && !this.router.url.startsWith('/home')) {
+                this.router.navigate(['/home']);
+              }
+            } else {
+              this.gymService.clearPendingBooking();
+              const route = result.role === 'admin' ? '/admin-dashboard' : '/member-portal';
+              this.router.navigate([route]);
+            }
           } else {
             this.loginError.set(result.message);
           }

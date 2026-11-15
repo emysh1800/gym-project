@@ -45,7 +45,25 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     if (this.authService.isLoggedIn) {
       this.loadUserBookings();
+      const pending = this.gymService.getPendingBooking();
+      if (pending) {
+        this.selectedSession.set(pending.session);
+      }
     }
+
+    this.authService.isLoggedIn$.subscribe((isLogged) => {
+      if (isLogged) {
+        this.loadUserBookings();
+        const pending = this.gymService.getPendingBooking();
+        if (pending) {
+          this.selectedSession.set(pending.session);
+          setTimeout(() => {
+            const el = document.getElementById('single-classes');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 150);
+        }
+      }
+    });
   }
 
   loadUserBookings(): void {
@@ -61,15 +79,19 @@ export class HomeComponent implements OnInit {
   openBookingModal(session: SingleSession): void {
     if (this.authService.isLoggedIn) {
       this.loadUserBookings();
+    } else {
+      this.gymService.setPendingBooking(session);
     }
     this.selectedSession.set(session);
   }
 
   closeBookingModal(): void {
+    this.gymService.clearPendingBooking();
     this.selectedSession.set(null);
   }
 
   onBookingSuccess(event: { session: SingleSession; bookingResponse: BookingResponse }): void {
+    this.gymService.clearPendingBooking();
     // 7. Update remaining seats immediately in UI
     if (event.session) {
       this.singleClasses.update((list) =>

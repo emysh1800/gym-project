@@ -7,7 +7,7 @@
         <span class="modal-role-icon">{{ session.icon || '🏋️' }}</span>
         <div>
           <span class="modal-tag">{{ session.category }}</span>
-          <h2 class="modal-title">{{ session.title }}</h2>
+          <h2 class="modal-title">تأكيد حجز: {{ session.title }}</h2>
         </div>
       </div>
       <button
@@ -42,6 +42,17 @@
         <button type="button" class="btn-quick-login" (click)="requestLogin()">
           تسجيل الدخول الآن
         </button>
+      </div>
+    }
+
+    <!-- Logged-in Ready to Confirm Banner -->
+    @if (auth.isLoggedIn && !alreadyBooked && session.spotsLeft > 0) {
+      <div class="confirm-step-banner">
+        <span class="step-icon">🎯</span>
+        <div class="step-info">
+          <strong>خطوة تأكيد الحجز</strong>
+          <p>أنت الآن مسجل الدخول. يرجى مراجعة تفاصيل الحصة، ثم الضغط على "تأكيد الحجز" أدناه لتثبيت مقعدك.</p>
+        </div>
       </div>
     }
 
@@ -156,15 +167,17 @@
         type="button"
         class="btn-modal-submit btn-confirm-booking"
         (click)="confirmBooking()"
-        [disabled]="isLoading() || !auth.isLoggedIn || alreadyBooked || session.spotsLeft === 0"
+        [disabled]="isLoading() || session.spotsLeft === 0 || (auth.isLoggedIn && alreadyBooked)"
       >
         @if (isLoading()) {
           <span class="spinner-icon"></span>
           <span>جاري تأكيد الحجز...</span>
         } @else if (session.spotsLeft === 0) {
           <span>الحصة مكتملة العدد</span>
-        } @else if (alreadyBooked) {
+        } @else if (auth.isLoggedIn && alreadyBooked) {
           <span>الحصة محجوزة مسبقاً</span>
+        } @else if (!auth.isLoggedIn) {
+          <span>🔐 تسجيل الدخول لتأكيد الحجز</span>
         } @else {
           <span>تأكيد الحجز (Confirm Booking)</span>
         }

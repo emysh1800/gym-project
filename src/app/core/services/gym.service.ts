@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { mockGymDb } from '../data/mock-gym.db';
 
@@ -15,6 +15,11 @@ import { WorkoutDay } from '../models/workout-day.model';
 import { NutritionOverview } from '../models/nutrition-overview.model';
 import { AdminMember, AdminStats } from '../models/admin-member.model';
 import { ClassBooking } from '../models/booking.model';
+
+export interface PendingBooking {
+  session: SingleSession;
+  notes?: string;
+}
 
 export interface BookingResponse {
   success: boolean;
@@ -36,7 +41,42 @@ export interface AdminMemberQueryParams {
 export class GymService {
   private readonly api = '/api';
 
+  private _pendingBooking$ = new BehaviorSubject<PendingBooking | null>(this.restorePendingBooking());
+  readonly pendingBooking$ = this._pendingBooking$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  setPendingBooking(session: SingleSession, notes?: string): void {
+    const data: PendingBooking = { session, notes };
+    this._pendingBooking$.next(data);
+    try {
+      sessionStorage.setItem('gym_pending_booking', JSON.stringify(data));
+    } catch {
+      // ignore storage error
+    }
+  }
+
+  getPendingBooking(): PendingBooking | null {
+    return this._pendingBooking$.getValue();
+  }
+
+  clearPendingBooking(): void {
+    this._pendingBooking$.next(null);
+    try {
+      sessionStorage.removeItem('gym_pending_booking');
+    } catch {
+      // ignore storage error
+    }
+  }
+
+  private restorePendingBooking(): PendingBooking | null {
+    try {
+      const raw = sessionStorage.getItem('gym_pending_booking');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
 
   getPricingPlans(): Observable<PricingPlan[]> {
     return this.http.get<PricingPlan[]>(`${this.api}/pricing-plans`).pipe(

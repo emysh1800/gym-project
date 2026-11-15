@@ -123,4 +123,18 @@ describe('GymService Bookings & Classes', () => {
       expect(afterCancel.some((b) => b.id === toCancel.id)).toBe(false);
     }
   });
+
+  it('should store and clear pending booking session for unauthenticated flows', async () => {
+    const classes = await firstValueFrom(gymService.getSingleClasses());
+    const sample = classes[0];
+
+    gymService.setPendingBooking(sample, 'ملاحظة خاصة');
+    const pending = gymService.getPendingBooking();
+    expect(pending).toBeTruthy();
+    expect(pending?.session.id).toBe(sample.id);
+    expect(pending?.notes).toBe('ملاحظة خاصة');
+
+    gymService.clearPendingBooking();
+    expect(gymService.getPendingBooking()).toBeNull();
+  });
 });
