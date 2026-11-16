@@ -72,18 +72,6 @@
           </button>
         }
 
-        @if ((authService.userRole$ | async) === 'admin') {
-          <button
-            type="button"
-            class="action-btn btn-admin"
-            (click)="requestAdminDashboard()"
-            title="الانتقال إلى لوحة الإدارة"
-          >
-            <span class="btn-icon">⚙️</span>
-            <span class="btn-label">لوحة الإدارة</span>
-          </button>
-        }
-
         <button
           type="button"
           class="action-btn btn-logout"
@@ -173,17 +161,6 @@
           >
             <span class="btn-icon">📅</span>
             <span class="btn-label">حجوزاتي</span>
-          </button>
-        }
-
-        @if ((authService.userRole$ | async) === 'admin') {
-          <button
-            type="button"
-            class="action-btn btn-admin"
-            (click)="requestAdminDashboard(); closeMobileMenu()"
-          >
-            <span class="btn-icon">⚙️</span>
-            <span class="btn-label">لوحة الإدارة</span>
           </button>
         }
 
