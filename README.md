@@ -1,165 +1,126 @@
-# 🏋️‍♂️ نادي اللياقة البدنية | Gym Management & Booking Platform
+# Gym Management System (Frontend & Demo API)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Angular-22.1-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular 22" />
-  <img src="https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
-  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/RTL-Arabic_First-0ea5e9?style=for-the-badge" alt="RTL Arabic First" />
-  <img src="https://img.shields.io/badge/Tests-Passing_9%2F9-10b981?style=for-the-badge" alt="Tests" />
-  <img src="https://img.shields.io/badge/Architecture-Offline--First_Mock_Fallback-8b5cf6?style=for-the-badge" alt="Offline-First" />
-</p>
-
-<p align="center">
-  <b>منصة ويب متكاملة وحديثة لإدارة الصالات الرياضية والنوادي الصحية، وحجز الحصص التدريبية، ومتابعة اشتراكات وبيانات المشتركين.</b><br />
-  A modern, production-ready Full-Stack Gym Management and Class Booking web application with smart role auto-detection, interactive member portal, and administrative dashboard.
-</p>
+> Modern gym and sports club management web client built with Angular and an Express demo API.
 
 ---
 
-## 🌟 أبرز مميزات المشروع (Key Highlights)
+## 🔗 Live Demo & Deployment Links
 
-### 1. 🚀 واجهة هبوط تسويقية متكاملة (Public Landing Page)
-* **عرض الباقات والاشتراكات (Pricing Plans)**: باقات شهرية، ربع سنوية، وسنوية مع مزايا واضحة وشارات الأكثر طلباً.
-* **الحصص المنفردة (Drop-in Single Classes)**: تصفح الحصص (Yoga, CrossFit, HIIT, Spinning, BodyBuilding) مع بيان المدرب، الموعد، والتكلفة، والعدد المتبقي من المقاعد بدقة ولحظياً.
-* **استعراض التجهيزات والمعدات (Equipment Showcase)**: أجهزة عالمية مصنفة حسب مجموعات العضلات.
-* **شبكة الفروع ومواعيد العمل (Branches & Schedule)**: معلومات الاتصال والمواقع وساعات العمل لكل فرع.
-* **نموذج التواصل السريع (Contact Form)** مع تأكيدات إرسال فورية.
+The project is hosted on Vercel:
+* **Primary Live URL (Recommended)**: [https://gym-project-blond-one.vercel.app](https://gym-project-blond-one.vercel.app)
+* **Alternative Preview URL**: [https://gym-project-vgp1.vercel.app](https://gym-project-vgp1.vercel.app)
 
-### 2. 🎯 تجربة حجز حصص ذكية وسلسة (Smart Session Booking UX)
-* **حجز فوري وتحديث لحظي للمقاعد**: احتساب فوري للمقاعد المتبقية لكل حصة وتحديث الواجهة مباشرة.
-* **الربط التلقائي بعد تسجيل الدخول (Seamless Post-Login Confirmation)**: إذا نقر زائر غير مسجل على "احجز الحصة"، يتم حفظ الحصة المعلقة، وفور تسجيل دخوله تفتح له مباشرة نافذة تأكيد الحجز المخصصة لتثبيت مقعده دون أي تشتيت.
-* **إدارة الحجوزات (My Bookings)**: صفحة مخصصة للمشترك لاستعراض حجوزاته القادمة، مع إمكانية إلغاء الحجز واسترجاع المقعد فورياً للآخرين.
-
-### 3. 🔐 تسجيل دخول موحد وتوجيه ذكي (Unified Auth & Auto Role Routing)
-* زر دخول واحد في شريط التنقل (`🔐 تسجيل الدخول`) دون الحاجة لاختيار نوع الحساب مسبقاً.
-* يقوم النظام تلقائياً بالتعرف على الصلاحية من خلال بيانات الاعتماد:
-  - حساب المشترك ⬅️ يوجه إلى حسابه وحجوزاته (`/member-portal`).
-  - حساب الأدمن ⬅️ يوجه إلى لوحة الإدارة الشاملة (`/admin-dashboard`).
-* شريط تنقل ديناميكي ونظيف يظهر فقط الأزرار والروابط التي يحتاجها المستخدم المسجل مع زر خروج سريع.
-
-### 4. 👤 بوابة المشترك (Interactive Member Portal)
-* استعراض المقاييس البدنية الحيوية (BMI، الوزن، نسبة الدهون، السعرات اليومية).
-* متابعة حالة الاشتراك الحالي، تاريخ الانتهاء، وعدد الأيام المتبقية مع شريط تقدم تفاعلي.
-* جدول التمارين الأسبوعي وجدول الأنظمة الغذائية والسعرات والماكروز.
-
-### 5. ⚙️ لوحة الإدارة المتكاملة (Admin Dashboard)
-* إحصائيات عامة لحظية: عدد المشتركين النشطين، الاشتراكات المجمدة، الحضور اليومي، والإيرادات.
-* إدارة المشتركين: بحث، تصفية حسب الباقة والحالة، تجميد أو تفعيل الاشتراك بضغطة زر، وتجديد الاشتراكات.
-
-### 6. ⚡ هندسة معمارية هجينة بدون انقطاع (Offline-First & Hybrid API)
-* مزودة بمحرك **Mock Database Interceptor** مدمج في الواجهة؛ في حالة تشغيل السيرفر محلياً يتم الربط بالـ REST API، وفي حالة الرفع كـ Static Web App أو انقطاع السيرفر، يتحول التطبيق تلقائياً وبسلاسة إلى قاعدة البيانات المحلية المتزامنة في المتصفح لضمان عدم توقف أي ميزة أو عرض.
+*(Note: When deployed as a static client on serverless platforms, runtime requests fallback gracefully to the integrated client-side mock store).*
 
 ---
 
-## 🔑 بيانات الدخول التجريبية (Demo Credentials)
+## 📸 Screenshots
 
-يمكنك تجربة النظام بكافة صلاحياته عبر الحسابات التالية:
+| View | Screenshot |
+| :--- | :--- |
+| **Member Portal & Bookings** | ![Member Portal](docs/screenshots/member-portal-bookings.png) |
+| **Responsive Navigation** | ![Navbar Preview](docs/screenshots/navbar-preview.png) |
+| **Active Session State** | ![Active Session](docs/screenshots/member-session.png) |
 
-| الدور (Role) | اسم المستخدم (Username) | كلمة المرور (Password) | الصلاحيات والواجهة |
+---
+
+## 🔑 Demo Access Credentials
+
+> **Notice**: These credentials exist solely for demonstration and UI testing purposes. In a real-world deployment, all user accounts require secure authentication protocols, salted hashing (e.g., argon2/bcrypt), and role-based database storage.
+
+| Role | Username | Password | Intended Screen / Route |
 | :--- | :--- | :--- | :--- |
-| **👑 مدير النظام (Admin)** | `manager` أو `admin` | `gym@2026` أو `123` | الوصول للوحة الإدارة، إحصائيات الأعضاء، تجميد وتفعيل وتجديد الاشتراكات |
-| **🏋️ المشترك (Member)** | `captain.ahmed` أو `member` | `gym@2026` أو `123` | حجز وإلغاء الحصص، متابعة القياسات والاشتراك، وجدول التغذية والتمارين |
+| **System Admin** | `manager` or `admin` | `gym@2026` or `123` | Redirects directly to `/admin-dashboard` |
+| **Club Member** | `captain.ahmed` or `member` | `gym@2026` or `123` | Redirects to `/member-portal` & `/my-bookings` |
 
 ---
 
-## 🛠️ التقنيات المستخدمة (Tech Stack)
+## ⚙️ Key Architectural Concepts
 
-### الواجهة الأمامية (Frontend)
-- **Framework**: Angular 22 (Standalone Components, Modern Signals, Control Flow `@if` / `@for`)
-- **Language**: TypeScript 5.x
-- **Styling**: Pure Modern CSS3 / Flexbox & CSS Grid / RTL-Ready Native Design (No bulky UI frameworks)
-- **State & Reactivity**: RxJS, Signals, BehaviorSubjects
-- **Testing**: Vitest & Angular Unit Testing Runner (9/9 automated test suites passing)
-
-### الواجهة الخلفية وقواعد البيانات (Backend & Storage)
-- **Runtime**: Node.js & Express.js
-- **Validation**: Zod Schemas for bullet-proof request validation
-- **Data Persistence**: JSON Database Store & In-Memory Fallback Client DB
+1. **Client-Side Fallback Store (Mock DB Fallback)**:
+   - The app communicates with `/api/*` endpoints.
+   - If the Express server is offline or the front-end is served statically, an Angular HTTP Interceptor (`mock-api.interceptor.ts`) intercepts failing requests and routes them to an in-memory client store (`mock-gym.db.ts`).
+2. **Session Booking State Preservation**:
+   - If a guest user clicks "Book Session" from the home screen, the target session is recorded in `sessionStorage`. Once authenticated, the booking confirmation modal re-opens automatically for immediate confirmation.
+3. **Local Scope Seat Management**:
+   - Booking and cancellation update the current client state and stored mock entries locally.
 
 ---
 
-## 🚀 التشغيل المحلي (Getting Started)
+## ⚠️ Known Limitations
 
-### المتطلبات المسبقة:
-- [Node.js](https://nodejs.org/) (الإصدار 18 أو أحدث)
-- npm (الإصدار 9 أو أحدث)
-
-### خطوات التثبيت:
-
-1. **استنساخ المستودع (Clone Repository):**
-   ```bash
-   git clone https://github.com/emysh1800/gym-project.git
-   cd gym-project
-   ```
-
-2. **تثبيت الحزم والاعتماديات (Install Dependencies):**
-   ```bash
-   npm install
-   ```
-
-3. **تشغيل المشروع:**
-   * **تشغيل الواجهة الأمامية فقط (Frontend Dev Server):**
-     ```bash
-     npm start
-     # يعمل التطبيق على: http://localhost:4200/
-     ```
-   * **تشغيل السيرفر الخلفي (Backend Server - Optional):**
-     ```bash
-     npm run server
-     # يعمل السيرفر على: http://localhost:3000/
-     ```
-
-4. **تشغيل الاختبارات الآلية (Run Tests):**
-   ```bash
-   npm test -- --watch=false
-   ```
-
-5. **بناء نسخة الإنتاج (Production Build):**
-   ```bash
-   npm run build
-   # يتم تخزين ملفات الإنتاج المحسنة في مجلد dist/GymClient
-   ```
+* **File-Based JSON Storage**: The local Express server uses a single JSON file (`server/database.json`). This is designed for local demonstration and is not suitable for concurrent production database loads.
+* **Serverless Read-Only Filesystems**: On serverless hosts like Vercel, serverless function filesystems are ephemeral and read-only; persistent writes require an external database service (e.g., PostgreSQL, MongoDB).
+* **Payment Gateways**: Third-party payment gateways (such as Stripe, Paymob, or Fawry) are not integrated in this codebase; the architecture is structured to allow future payment webhook integrations.
 
 ---
 
-## 📁 هيكلية المشروع (Project Architecture)
+## 🛠️ Tech Stack & Requirements
 
-```
-GymClient/
-├── src/
-│   ├── app/
-│   │   ├── core/                  # النواة: الخدمات، النماذج، ومحرك البيانات
-│   │   │   ├── data/              # Mock Database & Initial Seeding
-│   │   │   ├── interceptors/      # Mock API Interceptor & Network Fallback
-│   │   │   ├── models/            # TypeScript Interfaces (Member, Plans, Bookings...)
-│   │   │   └── services/          # AuthService, GymService, NotificationService
-│   │   ├── features/              # الصفحات الرئيسية
-│   │   │   ├── home/              # Landing Page, Plans, Equipment, Branches
-│   │   │   ├── member-portal/     # Member Dashboard, Metrics, Nutrition, Workout
-│   │   │   ├── admin-dashboard/   # Admin Stats, Member Management, Renewals
-│   │   │   └── my-bookings/       # Booked Classes & Cancel Management
-│   │   ├── shared/                # المكونات المشتركة
-│   │   │   ├── navbar/            # Responsive RTL Navbar with unified auth
-│   │   │   ├── login-modal/       # Unified Login Modal
-│   │   │   ├── book-class-modal/  # Smart Class Booking & Confirmation Dialog
-│   │   │   ├── contact-form/      # Contact Us Section Form
-│   │   │   └── toast/             # Global Toast Notifications
-│   │   ├── app.component.ts       # Main App Shell
-│   │   └── app.routes.ts          # Angular Router Definition
-│   └── styles/
-│       └── gym-ui.css             # Comprehensive Modern Dark/Emerald Theme Design
-├── server/                        # Express.js REST API Server
-│   ├── server.js                  # API Endpoints & Auth Handlers
-│   └── database.json              # Persistent JSON Data Store
-└── angular.json                   # Angular Workspace Build Configuration
+* **Runtime**: Node.js `>= 20.18.0` (Recommended: `22.x` LTS, see `.nvmrc`)
+* **Framework**: Angular `22.1.0` (Angular CLI `22.1.8`)
+* **TypeScript**: `~6.0.2`
+* **Test Runner**: Vitest `^4.0.8` (configured via `@angular/build:unit-test`)
+* **Backend**: Express.js with Zod payload validation
+
+---
+
+## 💻 Local Development Setup
+
+### 1. Prerequisites
+Ensure you are using a compatible Node.js version:
+```bash
+nvm use || node -v
 ```
 
+### 2. Installation
+```bash
+npm install
+```
+
+### 3. Running the Application
+The project can be run in two modes:
+
+* **Mode A: Frontend with integrated Mock fallback (Standard)**
+  ```bash
+  npm start
+  ```
+  Runs on `http://localhost:4200/`. When the backend is not running, the HTTP interceptor automatically provides mock responses.
+
+* **Mode B: Full-stack (Frontend + Express API Server)**
+  Open two terminal windows:
+  ```bash
+  # Terminal 1: Backend Server (runs on port 3000)
+  npm run server
+
+  # Terminal 2: Frontend with proxy (configured via proxy.conf.json)
+  npm start
+  ```
+  The proxy forwards `/api/*` requests from port 4200 directly to `http://localhost:3000`.
+
+### 4. Running Unit Tests
+```bash
+npm test -- --watch=false
+```
+
+### 5. Production Build
+```bash
+npm run build
+```
+Build artifacts are placed in `dist/GymClient`.
+
 ---
 
-## 👩‍💻 المطورة (Developer)
+## 🗺️ Roadmap
 
-تم تطوير وتصميم هذا المشروع بكل حب واحترافية بواسطة:
-* **GitHub**: [@emysh1800](https://github.com/emysh1800)
-* **Repository**: [gym-project](https://github.com/emysh1800/gym-project)
+- [ ] Connect a persistent SQL database (e.g., PostgreSQL / Prisma ORM).
+- [ ] Integrate JWT authentication with password encryption.
+- [ ] Implement online payment checkout hooks.
+- [ ] Export member attendance and subscription reports to PDF/Excel.
 
-> 💡 **ملاحظة للمهتمين وأصحاب الأعمال**: المشروع قابل للتخصيص بالكامل (White-Label) ليلائم هوية أي صالة رياضية أو نادي رياضي مع إمكانية ربط بوابات الدفع الإلكتروني (Paymob / Stripe / Fawry) وتصدير التقارير.
+---
+
+## 📄 License & Arabic Documentation
+
+* Standard open license: see [LICENSE](LICENSE).
+* النسخة العربية من التوثيق متاحة في: [README.ar.md](README.ar.md).
